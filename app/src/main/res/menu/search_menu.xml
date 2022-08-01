@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/searchLibraryIcon"
+        android:icon="@drawable/ic_search_black"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        android:title="Save Post"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/nothing"
+        android:icon="@drawable/ic_create"
+        android:title="Not specified"
+        />
+
+</menu>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditProfileActivity">
+
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/profileAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/editProfileToolBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:menu="@menu/edit_profile_menu"
+            app:navigationIcon="@drawable/ic_arrow_back">
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/linearProgressIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profileAppBar"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:indicatorColor="@color/blue"
+        app:trackColor="@color/light_blue" />
+
+
+    <TextView
+        android:id="@+id/editProfileUsernameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearProgressIndicator"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Username"
+        android:textColor="@color/ColorBlackNote"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/editProfileUsernameET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editProfileUsernameTV"
+        android:layout_marginStart="16dp"
+        android:maxLines="1"
+        android:layout_marginEnd="16dp" />
+
+    <TextView
+        android:id="@+id/editProfileDisplayNameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editProfileUsernameET"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Name"
+        android:textColor="@color/ColorBlackNote"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/editProfileDisplayNameET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editProfileDisplayNameTV"
+        android:layout_marginStart="16dp"
+        android:maxLines="1"
+        android:layout_marginEnd="16dp" />
+
+    <TextView
+        android:id="@+id/editProfileProfessionTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editProfileDisplayNameET"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Profession"
+        android:textColor="@color/ColorBlackNote"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/editProfileProfessionET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editProfileProfessionTV"
+        android:layout_marginStart="16dp"
+        android:maxLines="1"
+        android:layout_marginEnd="16dp" />
+
+    <TextView
+        android:id="@+id/editProfileBioTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editProfileProfessionET"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Bio"
+        android:textColor="@color/ColorBlackNote"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/editProfileBioEV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editProfileBioTV"
+        android:layout_marginStart="16dp"
+        android:maxLines="1"
+        android:layout_marginEnd="16dp" />
+
+
+</RelativeLayout>

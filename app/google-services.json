@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "652081652470",
+    "project_id": "notespace-5ca23",
+    "storage_bucket": "notespace-5ca23.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:652081652470:android:f980cb7416ef8a2b2c42d7",
+        "android_client_info": {
+          "package_name": "com.example.notespace"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "652081652470-88t7h9d60n06e1ivvn1v43ga9kp3ju8g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASetdkHrk-G2agyCMiynqeayCpERJ476A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "652081652470-88t7h9d60n06e1ivvn1v43ga9kp3ju8g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

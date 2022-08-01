@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".GroupProfileActivity">
+
+    <ImageView
+        android:id="@+id/profileButtonBackGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_arrow_back" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profileButtonBackGroup"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/RlGroup">
+
+        <ProgressBar
+            android:id="@+id/profilePictureProgressBarGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:indeterminateTint="@color/orange"
+            android:background="@android:color/transparent"
+            android:visibility="visible" />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="vertical">
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profilePictureIVGroup"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/profile_placeholder"
+                app:civ_border_color="@color/gray"
+                app:civ_border_width="1dp"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/changeProfilePictureIVGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:layout_below="@id/profilePictureIVGroup"
+                android:layout_marginTop="-35dp"
+                android:padding="8dp"
+                android:background="@drawable/background_camera_icon"
+                android:src="@drawable/ic_camera" />
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+
+    <TextView
+        android:id="@+id/profileDisplayNameGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/RlGroup"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="RAJ THAKARE"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/profileUsernameGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profileDisplayNameGroup"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="4dp"
+        android:text="rajthakare237"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/joinGroupButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profileBioGroup"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Join Group" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/llll"
+        android:layout_below="@id/joinGroupButton"
+        android:weightSum="2"
+        >
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/groupMembersButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="23 Members" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/editProfileBtnGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
+            android:text="Edit Profile"
+            android:layout_weight="1"
+            android:visibility="visible" />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/profileBioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profileUsernameGroup"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="Hello this is my bio how are you doing"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/groupJoinCodeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/llll"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text=" View Join Code" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/libraryButtonGP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/groupJoinCodeButton"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="Library" />
+
+
+</RelativeLayout>
+
+
+<!--<LinearLayout-->
+<!--android:id="@+id/membersLL"-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:layout_below="@id/libraryButtonGP"-->
+<!--android:layout_centerHorizontal="true"-->
+<!--android:layout_marginTop="8dp"-->
+<!--android:layout_weight="1"-->
+<!--android:background="@drawable/edit_text_bg"-->
+<!--android:gravity="center"-->
+<!--android:orientation="horizontal"-->
+<!--android:padding="8dp">-->
+
+<!--<TextView-->
+<!--    android:id="@+id/noOfMembers"-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_marginTop="8dp"-->
+<!--    android:layout_marginBottom="8dp"-->
+<!--    android:paddingRight="4dp"-->
+<!--    android:text="23"-->
+<!--    android:textColor="@color/black"-->
+<!--    android:textSize="18sp" />-->
+
+<!--<TextView-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:text="members"-->
+<!--    android:textColor="@color/black"-->
+<!--    android:textSize="18sp" />-->
+
+
+<!--</LinearLayout>-->
+
+
+
+<!--<TextView-->
+<!--android:id="@+id/profileGroupJoinCode"-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:layout_below="@id/membersLL"-->
+<!--android:layout_centerHorizontal="true"-->
+<!--android:layout_marginTop="4dp"-->
+<!--android:text="Join code - ⚫⚫⚫⚫⚫⚫⚫"-->
+<!--android:textColor="@color/black"-->
+<!--android:textSize="18sp" />-->

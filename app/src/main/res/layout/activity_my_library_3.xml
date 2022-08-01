@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MyLibrary3">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/folderAppBarSecond3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        app:elevation="0dp"
+        android:background="@android:color/transparent"
+        >
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/folderToolBarSecond3"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@color/black"
+            app:elevation="0dp"
+            app:title="FolderName"
+            app:titleTextColor="@color/black">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchViewLibraryFolderDetailSecond3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:queryHint="Search"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                />
+
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addDocumentButtonSecond3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/folderAppBarSecond3"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Add Document"
+        android:textColor="@color/white"
+        app:icon="@drawable/ic_add"
+        app:iconGravity="textStart"
+        app:iconTint="@color/white" />
+
+    <ImageView
+        android:id="@+id/fileNotFoundIV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_file_not_found"
+        android:layout_below="@id/addDocumentButtonSecond3"
+        android:padding="16dp"
+        android:visibility="gone"
+        />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/docRVSecond3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/addDocumentButtonSecond3"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        tools:listitem="@layout/item_pdf_rv" />
+
+
+</RelativeLayout>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.group.GroupFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/groupAppBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp"
+        android:elevation="0dp"
+        app:liftOnScroll="true"
+        android:layout_alignParentTop="true"
+        >
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/groupToolBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Groups"
+            android:background="@android:color/transparent"
+            app:menu="@menu/group_menu"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:elevation="0dp"
+            android:elevation="0dp"
+            style="@style/Widget.AppCompat.Toolbar"
+            >
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchViewGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="8dp"
+                app:queryHint="Search"/>
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/black"
+        android:layout_below="@id/groupAppBarLayout"
+        android:layout_marginBottom="8dp"
+        android:id="@+id/line"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/noGroupFoundRL"
+        android:visibility="gone"
+        android:layout_below="@id/line">
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:id="@+id/noGroupFoundIV"
+            android:src="@drawable/ic_no_user_found"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/noGroupFoundIV"
+            android:layout_centerHorizontal="true"
+            android:text="Group not found."
+            android:textColor="@color/black"
+            android:textSize="20sp"/>
+    </RelativeLayout>
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/group_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/noGroupFoundRL"
+        tools:listitem="@layout/group_rv_item" />
+
+
+</RelativeLayout>

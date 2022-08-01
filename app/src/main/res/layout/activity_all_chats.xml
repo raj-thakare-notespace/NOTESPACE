@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AllChatsActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/allChatsAppBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/transparent"
+        app:elevation="0dp"
+        android:elevation="0dp"
+        app:liftOnScroll="true"
+        >
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/allChatsToolBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="?attr/colorOnSurface"
+            app:title="Chats"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:elevation="0dp"
+            android:elevation="0dp"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:titleTextAppearance="?attr/textAppearanceTitleLarge"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/all_chats_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/allChatsAppBarLayout"
+        tools:listitem="@layout/all_chat_item_rv" />
+
+
+</RelativeLayout>

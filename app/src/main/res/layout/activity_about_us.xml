@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AboutUsActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/aboutUsAppBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/transparent"
+        app:elevation="0dp"
+        android:elevation="0dp"
+        style="@style/Widget.Design.AppBarLayout"
+        app:liftOnScroll="true"
+        >
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/aboutUsToolBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="?attr/colorOnSurface"
+            app:title="About Us"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:elevation="0dp"
+            android:elevation="0dp"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:titleTextAppearance="?attr/textAppearanceTitleLarge"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ImageView
+        android:id="@+id/notepsaceLogo"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_note_space_logo"
+        android:layout_below="@id/aboutUsAppBarLayout"/>
+
+
+    <TextView
+        android:id="@+id/aboutUsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/emailTextView"
+        android:layout_below="@id/notepsaceLogo"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/kurale"
+        android:gravity="start"
+        android:text="We help people achieve the best version of themselves by providing a platform that lets users share and access quality content in an organised and efficient manner."
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/emailTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/developerTV"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="start"
+        android:fontFamily="@font/kurale"
+        android:text="Email :- thenotespace@gmail.com"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/developerTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="48dp"
+        android:fontFamily="@font/kurale"
+        android:layout_alignParentBottom="true"
+        android:text="Developer :- Raj Gajanan Thakare"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+
+
+</RelativeLayout>

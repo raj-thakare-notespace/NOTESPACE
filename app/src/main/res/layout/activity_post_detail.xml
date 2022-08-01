@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#131111"
+    tools:context=".PostDetailActivity">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#131111">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/postDetailAppBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="@android:color/transparent"
+                android:elevation="0dp"
+                app:elevation="0dp"
+                app:liftOnScroll="true">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/postDetailToolBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent"
+                    android:elevation="0dp"
+                    app:elevation="0dp"
+                    app:layout_scrollFlags="scroll|enterAlways|snap"
+                    app:menu="@menu/post_detail_menu"
+                    app:navigationIcon="@drawable/ic_arrow_back"
+                    app:navigationIconTint="@color/white" />
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+
+            <ImageView
+                android:id="@+id/postImageDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/postDetailAppBarLayout"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="16dp"
+                android:background="#F5F5F5"
+                android:maxHeight="300dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/image_placeholder"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</RelativeLayout>

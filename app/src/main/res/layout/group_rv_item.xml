@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/linearLayoutGroupItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/profile_placeholder"
+            android:id="@+id/group_profile_picture"
+            android:layout_marginLeft="8dp"/>
+
+        <TextView
+            android:id="@+id/group_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Digital Science Academy"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="16dp"/>
+
+    </LinearLayout>
+
+<!--    <ImageView-->
+<!--        android:id="@+id/newMessageBadgeIVGroup"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_centerVertical="true"-->
+<!--        android:layout_marginRight="16dp"-->
+<!--        android:layout_toLeftOf="@id/deleteThreeDotsGroupItem"-->
+<!--        android:padding="4dp"-->
+<!--        android:src="@drawable/ic_green_dot"-->
+<!--        android:visibility="invisible" />-->
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewMsgBadgeGPItem"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="16dp"
+        android:layout_toLeftOf="@id/deleteThreeDotsGroupItem"
+        android:elevation="0dp"
+        app:cardBackgroundColor="@color/green"
+        app:cardCornerRadius="40dp"
+        android:visibility="invisible"
+        app:cardElevation="0dp">
+
+        <TextView
+            android:id="@+id/noOfNewMsgTVGPItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="0"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+    </androidx.cardview.widget.CardView>
+
+
+    <ImageView
+        android:id="@+id/deleteThreeDotsGroupItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:paddingTop="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        android:src="@drawable/ic_three_dots" />
+
+
+</RelativeLayout>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.notespace.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/home_fragment" />
+    <fragment
+        android:id="@+id/navigation_search"
+        android:name="com.example.notespace.ui.search.SearchFragment"
+        android:label="search_fragment"
+        tools:layout="@layout/search_fragment" />
+    <fragment
+        android:id="@+id/navigation_group"
+        android:name="com.example.notespace.ui.group.GroupFragment"
+        android:label="group_fragment"
+        tools:layout="@layout/group_fragment" />
+    <fragment
+        android:id="@+id/navigation_library"
+        android:name="com.example.notespace.ui.library.LibraryFragment"
+        android:label="library_fragment"
+        tools:layout="@layout/library_fragment" />
+
+</navigation>
