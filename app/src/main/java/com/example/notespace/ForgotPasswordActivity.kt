@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
+import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -40,21 +41,22 @@ class ForgotPasswordActivity : AppCompatActivity() {
                 editTextLayout.error = "Email is required."
                 editTextLayout.requestFocus()
             }
-
-            if(!Patterns.EMAIL_ADDRESS.matcher(editTextForgotPassEmail.text.toString()).matches()){
+            else if(!Patterns.EMAIL_ADDRESS.matcher(editTextForgotPassEmail.text.toString()).matches()){
                 editTextLayout.error = "Please provide valid email."
                 editTextLayout.requestFocus()
             }
-
-            Firebase.auth.sendPasswordResetEmail(editTextForgotPassEmail.text.toString().trim()).addOnCompleteListener {
-                if(it.isSuccessful){
-                    Toast.makeText(this,"Check your email.",Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this,SignInActivity::class.java))
-                }
-                else{
-                    Toast.makeText(this,"Try again.",Toast.LENGTH_SHORT).show()
+            else{
+                Firebase.auth.sendPasswordResetEmail(editTextForgotPassEmail.text.toString().trim()).addOnCompleteListener {
+                    if(it.isSuccessful){
+                        Toast.makeText(this,"Check your email (spam folder).",Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this,SignInActivity::class.java))
+                    }
+                    else{
+                        Toast.makeText(this,"Try again.",Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
+
         }
 
     }

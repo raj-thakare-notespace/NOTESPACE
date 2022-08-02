@@ -125,6 +125,7 @@ class SignUpVerification : AppCompatActivity() {
                         }
                     }
                     startActivity(Intent(this, MainActivity::class.java))
+                    this.finish()
                 }
             }
     }

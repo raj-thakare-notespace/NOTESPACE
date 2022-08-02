@@ -72,10 +72,13 @@ class GroupMembersActivity : AppCompatActivity() {
             .child("members")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    membersUidsList.clear()
-                    for (item in snapshot.children) {
-                        membersUidsList.add(item.key.toString())
+                    if(snapshot.exists()){
+                        membersUidsList.clear()
+                        for (item in snapshot.children) {
+                            membersUidsList.add(item.key.toString())
+                        }
                     }
+
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -87,21 +90,26 @@ class GroupMembersActivity : AppCompatActivity() {
         FirebaseDatabase.getInstance().reference.child("users")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    arrayListAllFollowers.clear()
-                    for (i in snapshot.children) {
 
-                        if (membersUidsList.contains(i.key.toString())) {
+                    if(snapshot.exists()){
+                        arrayListAllFollowers.clear()
+                        for (i in snapshot.children) {
+
+                            if (membersUidsList.contains(i.key.toString())) {
 
 
-                            val model = i.getValue(GroupMemberModel::class.java)!!
-                            model.groupUid = uid.toString()
-                            model.createdBy = groupCreatedBy
-                            arrayListAllFollowers.add(model)
-                            Log.i("wuff", model.toString())
-                            allChatAdapter.notifyDataSetChanged()
+                                val model = i.getValue(GroupMemberModel::class.java)!!
+                                model.groupUid = uid.toString()
+                                model.createdBy = groupCreatedBy
+                                arrayListAllFollowers.add(model)
+                                Log.i("wuff", model.toString())
+                                allChatAdapter.notifyDataSetChanged()
 
+                            }
                         }
                     }
+
+
                 }
 
                 override fun onCancelled(error: DatabaseError) {

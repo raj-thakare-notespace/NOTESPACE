@@ -97,6 +97,45 @@ class GroupProfileActivity : AppCompatActivity() {
         var uid = intent.getStringExtra("uid").toString()
         Log.i("tokyo",uid+"gpprofile")
 
+        // To delete no existing members
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .child(uid).child("members").addValueEventListener(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            for(member in snapshot.children){
+                                FirebaseDatabase.getInstance().reference.child("users").child(member.key.toString())
+                                    .addListenerForSingleValueEvent(object : ValueEventListener{
+                                        override fun onDataChange(snapshot: DataSnapshot) {
+
+                                            try {
+                                                if(!snapshot.exists()){
+                                                    FirebaseDatabase.getInstance().reference.child("users")
+                                                        .child(uid).child("members").child(member.key.toString()).removeValue()
+                                                }
+                                            } catch (e: Exception) {
+                                            }
+
+                                        }
+
+                                        override fun onCancelled(error: DatabaseError) {
+                                            TODO("Not yet implemented")
+                                        }
+
+                                    })
+                            }
+                        }
+
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+        } catch (e: Exception) {
+        }
+
         FirebaseDatabase.getInstance().reference.child("users")
             .child(uid).child("members")
             .child(Firebase.auth.currentUser!!.uid).addListenerForSingleValueEvent(object : ValueEventListener{

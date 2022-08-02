@@ -35,8 +35,6 @@ class GroupFragment : Fragment() {
         fun newInstance() = GroupFragment()
     }
 
-    var arrayListOfJoiningCode = ArrayList<String>()
-
     private lateinit var groupNotFoundRL: RelativeLayout
 
     private lateinit var viewModel: GroupViewModel

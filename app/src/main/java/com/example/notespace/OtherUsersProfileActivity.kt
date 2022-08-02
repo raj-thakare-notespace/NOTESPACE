@@ -212,6 +212,11 @@ class OtherUsersProfileActivity : AppCompatActivity() {
                                 else -> false
                             }
 
+                            if(max == 0L){
+                                topRank = arrayListOfRewards[1].rankName
+                                mostStars = arrayListOfRewards[1].stars
+                            }
+
                             when(topRank){
 
                                 "Helpful" -> {

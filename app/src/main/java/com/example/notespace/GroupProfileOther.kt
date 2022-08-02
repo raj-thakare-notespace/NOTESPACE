@@ -47,8 +47,6 @@ class GroupProfileOther : AppCompatActivity() {
     lateinit var username: TextView
     lateinit var bio: TextView
 
-//    lateinit var groupJoinCode: TextView
-
     val storage = Firebase.storage
 
     val database = Firebase.database
@@ -57,7 +55,6 @@ class GroupProfileOther : AppCompatActivity() {
 
     var TOKEN = ""
 
-//    lateinit var membersLL : LinearLayout
 
     lateinit var usernameL: String
     lateinit var displayNameL: String
@@ -79,6 +76,45 @@ class GroupProfileOther : AppCompatActivity() {
 
         var uid = intent.getStringExtra("uid").toString()
         Log.i("tokyo", uid + "gpprofile")
+
+        // To delete no existing members
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .child(uid).child("members").addValueEventListener(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            for(member in snapshot.children){
+                                FirebaseDatabase.getInstance().reference.child("users").child(member.key.toString())
+                                    .addListenerForSingleValueEvent(object : ValueEventListener{
+                                        override fun onDataChange(snapshot: DataSnapshot) {
+
+                                            try {
+                                                if(!snapshot.exists()){
+                                                    FirebaseDatabase.getInstance().reference.child("users")
+                                                        .child(uid).child("members").child(member.key.toString()).removeValue()
+                                                }
+                                            } catch (e: Exception) {
+                                            }
+
+                                        }
+
+                                        override fun onCancelled(error: DatabaseError) {
+                                            TODO("Not yet implemented")
+                                        }
+
+                                    })
+                            }
+                        }
+
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+        } catch (e: Exception) {
+        }
 
         FirebaseDatabase.getInstance().reference.child("users")
             .child(uid).child("members")
@@ -159,7 +195,9 @@ class GroupProfileOther : AppCompatActivity() {
             .child(FirebaseAuth.getInstance().currentUser!!.uid)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    currentUserModel = snapshot.getValue(AllChatModel::class.java)!!
+                    if(snapshot.exists()){
+                        currentUserModel = snapshot.getValue(AllChatModel::class.java)!!
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -179,121 +217,124 @@ class GroupProfileOther : AppCompatActivity() {
         okButton.setOnClickListener {
             if (eName.text.isNotEmpty()) {
 
-                Log.i("eeee", eName.text.toString())
-
                 val eNameText = eName.text.toString()
 
                 Firebase.database.reference.child("users")
                     .child(uid.toString())
                     .addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
-                            var groupJoiningCode = ""
-                            Log.i("eeeed", eName.text.toString())
-                            for (item in snapshot.children) {
-                                if (item.key == "joinCode") {
-                                    groupJoiningCode = item.value.toString()
-                                    break
+
+                            if(snapshot.exists()){
+                                var groupJoiningCode = ""
+                                Log.i("eeeed", eName.text.toString())
+                                for (item in snapshot.children) {
+                                    if (item.key == "joinCode") {
+                                        groupJoiningCode = item.value.toString()
+                                        break
+                                    }
+                                }
+
+                                val j = eName.text.toString() == groupJoiningCode
+                                Log.i(
+                                    "jcode",
+                                    j.toString() + " " + eName.text.toString() + " & " + groupJoiningCode
+                                )
+
+
+                                // to check if the code is correct
+                                if (eNameText == groupJoiningCode) {
+
+
+                                    FirebaseDatabase.getInstance().reference.child("users")
+                                        .child(Firebase.auth.currentUser!!.uid)
+                                        .child("my_groups")
+                                        .child(uid)
+                                        .setValue(group).addOnCompleteListener {
+                                            if (it.isSuccessful) {
+                                                FirebaseDatabase.getInstance().reference.child("users")
+                                                    .child(uid)
+                                                    .child("members")
+                                                    .child(Firebase.auth.currentUser!!.uid)
+                                                    .setValue(currentUserModel)
+                                                    .addOnCompleteListener {
+                                                        if (it.isSuccessful) {
+                                                            joinGroupButton.text = "Joined"
+
+                                                            FirebaseDatabase.getInstance().reference.child(
+                                                                "users"
+                                                            ).child(uid)
+                                                                .child("createdBy")
+                                                                .addListenerForSingleValueEvent(object :
+                                                                    ValueEventListener {
+                                                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                                                        val creatorId =
+                                                                            snapshot.value.toString()
+
+                                                                        FirebaseDatabase.getInstance().reference.child(
+                                                                            "users"
+                                                                        )
+                                                                            .child(creatorId)
+                                                                            .child("token")
+                                                                            .addListenerForSingleValueEvent(
+                                                                                object :
+                                                                                    ValueEventListener {
+                                                                                    override fun onDataChange(
+                                                                                        snapshot: DataSnapshot
+                                                                                    ) {
+                                                                                        TOKEN =
+                                                                                            snapshot.value.toString()
+                                                                                        PushNotification(
+                                                                                            NotificationData(
+                                                                                                "${currentUserModel.username} Joined the group",
+                                                                                                "click here to see"
+                                                                                            ),
+                                                                                            TOKEN
+                                                                                        ).also {
+                                                                                            try {
+                                                                                                sendNotification(
+                                                                                                    it
+                                                                                                )
+                                                                                            } catch (e: Exception) {
+                                                                                            }
+                                                                                        }
+                                                                                    }
+
+                                                                                    override fun onCancelled(
+                                                                                        error: DatabaseError
+                                                                                    ) {
+                                                                                        TODO("Not yet implemented")
+                                                                                    }
+
+                                                                                })
+
+                                                                    }
+
+                                                                    override fun onCancelled(error: DatabaseError) {
+                                                                        TODO("Not yet implemented")
+                                                                    }
+
+                                                                })
+
+                                                            Toast.makeText(
+                                                                applicationContext,
+                                                                "Joined group",
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+                                                        }
+                                                    }
+                                            }
+                                        }
+
+                                } else {
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "Wrong code",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
 
-                            val j = eName.text.toString() == groupJoiningCode
-                            Log.i(
-                                "jcode",
-                                j.toString() + " " + eName.text.toString() + " & " + groupJoiningCode
-                            )
 
-
-                            // to check if the code is correct
-                            if (eNameText == groupJoiningCode) {
-
-
-                                FirebaseDatabase.getInstance().reference.child("users")
-                                    .child(Firebase.auth.currentUser!!.uid)
-                                    .child("my_groups")
-                                    .child(uid)
-                                    .setValue(group).addOnCompleteListener {
-                                        if (it.isSuccessful) {
-                                            FirebaseDatabase.getInstance().reference.child("users")
-                                                .child(uid)
-                                                .child("members")
-                                                .child(Firebase.auth.currentUser!!.uid)
-                                                .setValue(currentUserModel)
-                                                .addOnCompleteListener {
-                                                    if (it.isSuccessful) {
-                                                        joinGroupButton.text = "Joined"
-
-                                                        FirebaseDatabase.getInstance().reference.child(
-                                                            "users"
-                                                        ).child(uid)
-                                                            .child("createdBy")
-                                                            .addListenerForSingleValueEvent(object :
-                                                                ValueEventListener {
-                                                                override fun onDataChange(snapshot: DataSnapshot) {
-                                                                    val creatorId =
-                                                                        snapshot.value.toString()
-
-                                                                    FirebaseDatabase.getInstance().reference.child(
-                                                                        "users"
-                                                                    )
-                                                                        .child(creatorId)
-                                                                        .child("token")
-                                                                        .addListenerForSingleValueEvent(
-                                                                            object :
-                                                                                ValueEventListener {
-                                                                                override fun onDataChange(
-                                                                                    snapshot: DataSnapshot
-                                                                                ) {
-                                                                                    TOKEN =
-                                                                                        snapshot.value.toString()
-                                                                                    PushNotification(
-                                                                                        NotificationData(
-                                                                                            "${currentUserModel.username} Joined the group",
-                                                                                            "click here to see"
-                                                                                        ),
-                                                                                        TOKEN
-                                                                                    ).also {
-                                                                                        try {
-                                                                                            sendNotification(
-                                                                                                it
-                                                                                            )
-                                                                                        } catch (e: Exception) {
-                                                                                        }
-                                                                                    }
-                                                                                }
-
-                                                                                override fun onCancelled(
-                                                                                    error: DatabaseError
-                                                                                ) {
-                                                                                    TODO("Not yet implemented")
-                                                                                }
-
-                                                                            })
-
-                                                                }
-
-                                                                override fun onCancelled(error: DatabaseError) {
-                                                                    TODO("Not yet implemented")
-                                                                }
-
-                                                            })
-
-                                                        Toast.makeText(
-                                                            applicationContext,
-                                                            "Joined group",
-                                                            Toast.LENGTH_SHORT
-                                                        ).show()
-                                                    }
-                                                }
-                                        }
-                                    }
-
-                            } else {
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Wrong code",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
 
                         }
 
@@ -320,12 +361,15 @@ class GroupProfileOther : AppCompatActivity() {
             .child(uid.toString())
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    var group = snapshot.getValue(Group::class.java)
-                    if (group!!.createdBy == Firebase.auth.currentUser!!.uid) {
-                        joinGroupButton.visibility = View.GONE
-                        groupMembersButton.visibility = View.VISIBLE
-                    } else {
-                        joinGroupButton.visibility = View.VISIBLE
+
+                    if(snapshot.exists()){
+                        var group = snapshot.getValue(Group::class.java)
+                        if (group!!.createdBy == Firebase.auth.currentUser!!.uid) {
+                            joinGroupButton.visibility = View.GONE
+                            groupMembersButton.visibility = View.VISIBLE
+                        } else {
+                            joinGroupButton.visibility = View.VISIBLE
+                        }
                     }
                 }
 
