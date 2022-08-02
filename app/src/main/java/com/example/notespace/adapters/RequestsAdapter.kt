@@ -55,7 +55,7 @@ class RequestsAdapter(val context: Context,var arrayList: ArrayList<RequestModel
                             .child("request_list")
                             .child(model.uid)
                             .removeValue().addOnSuccessListener {
-                                Toast.makeText(context,"Removed Successfully",Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context,"Request accepted.",Toast.LENGTH_SHORT).show()
                             }
                     }
             } catch (e: Exception) {

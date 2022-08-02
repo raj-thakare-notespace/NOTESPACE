@@ -249,7 +249,7 @@ class ChatActivity : AppCompatActivity() {
                                     .child("users")
                                     .child(receiverUid.toString())
                                     .child("chatted_list")
-                                    .push()
+                                    .child(Firebase.auth.currentUser!!.uid)
                                     .setValue(currentUserModel)
                             }
                         }

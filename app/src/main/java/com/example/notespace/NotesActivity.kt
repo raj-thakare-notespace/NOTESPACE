@@ -3,6 +3,8 @@ package com.example.notespace
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
@@ -30,12 +32,16 @@ class NotesActivity : AppCompatActivity() {
 
     lateinit var materialToolbar: MaterialToolbar
 
+    lateinit var noItemFoundTextView: TextView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes)
 
         materialToolbar = findViewById(R.id.toolBarNotes)
+
+        noItemFoundTextView = findViewById(R.id.noItemFoundTVNotes)
 
         materialToolbar.setNavigationOnClickListener {
             finish()
@@ -104,16 +110,20 @@ class NotesActivity : AppCompatActivity() {
             if (text != null) {
                 if(item.title.toLowerCase().contains(text.toLowerCase())){
                     filteredList.add(item)
-//                    noItemFoundTV.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
+                    noItemFoundTextView.visibility = View.GONE
                 }
             }
         }
 
         if(filteredList.isEmpty()){
 //            noItemFoundTV.visibility = View.VISIBLE
-            Toast.makeText(this,"No data found", Toast.LENGTH_SHORT).show()
+            recyclerView.visibility = View.GONE
+            noItemFoundTextView.visibility = View.VISIBLE
         }
         else{
+            recyclerView.visibility = View.VISIBLE
+            noItemFoundTextView.visibility = View.GONE
             adapter.setFilteredList(filteredList)
         }
     }

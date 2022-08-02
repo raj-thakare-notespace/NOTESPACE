@@ -41,45 +41,15 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
-<!--    <RelativeLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/rlNotes"-->
-<!--        >-->
-
-
-<!--        <ImageView-->
-<!--            android:id="@+id/backArrowNotes"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_centerVertical="true"-->
-<!--            android:padding="16dp"-->
-<!--            android:src="@drawable/ic_arrow_back" />-->
-
-<!--        <androidx.appcompat.widget.SearchView-->
-<!--            android:id="@+id/searchViewNoteActivity"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_centerVertical="true"-->
-<!--            android:layout_marginLeft="16dp"-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            android:layout_marginEnd="16dp"-->
-<!--            android:layout_marginBottom="16dp"-->
-<!--            android:layout_toRightOf="@id/backArrowNotes"-->
-<!--            android:background="@drawable/edit_text_bg" />-->
-
-<!--    </RelativeLayout>-->
-
     <TextView
         android:id="@+id/noItemFoundTVNotes"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/appBarNotes"
-        android:layout_marginLeft="16dp"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
-        android:text="No item found"
+        android:layout_centerHorizontal="true"
+        android:text="No item found."
         android:textSize="18sp"
         android:textStyle="italic"
         android:visibility="gone" />
