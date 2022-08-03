@@ -56,6 +56,32 @@ class GroupChatActivity : AppCompatActivity() {
         }
     }
 
+    private fun refreshGroupMessages(){
+        FirebaseDatabase.getInstance().reference
+            .child("groupChat")
+            .child(uid!!)
+            .child("messages")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if(snapshot.exists()){
+                        messageList.clear()
+                        for (dataSnapshot in snapshot.children) {
+                            val model = dataSnapshot.getValue(MessageModel::class.java)!!
+                            model.createdBy = createdBy
+                            messageList.add(model!!)
+                            chatRecyclerView.smoothScrollToPosition(messageList.count() - 1)
+                        }
+                        messageAdapter.notifyDataSetChanged()
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+            })
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,7 +167,8 @@ class GroupChatActivity : AppCompatActivity() {
                     if(snapshot.exists()){
                         messageList.clear()
                         for (dataSnapshot in snapshot.children) {
-                            val model = dataSnapshot.getValue(MessageModel::class.java)
+                            val model = dataSnapshot.getValue(MessageModel::class.java)!!
+                            model.createdBy = createdBy
                             messageList.add(model!!)
                             chatRecyclerView.smoothScrollToPosition(messageList.count() - 1)
                         }
@@ -196,7 +223,7 @@ class GroupChatActivity : AppCompatActivity() {
             if (messageBox.text.toString().isNotEmpty()) {
                 val message = messageBox.text.toString()
                 var time = Date().time
-                val model = MessageModel(message, senderId, null, time, username)
+                val model = MessageModel(message, senderId, null, time, username,uid)
                 messageBox.setText("")
 
                 try {
@@ -206,6 +233,7 @@ class GroupChatActivity : AppCompatActivity() {
                         .push()
                         .setValue(model).addOnCompleteListener {
                             if (it.isSuccessful) {
+                                refreshGroupMessages()
                                 for (item in arrayListMembersToken) {
                                     PushNotification(
                                         NotificationData(titleNotification, messageNotification),
@@ -217,8 +245,6 @@ class GroupChatActivity : AppCompatActivity() {
                                         }
                                     }
                                 }
-
-                                Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
                             }
                         }
                 } catch (e: Exception) {

@@ -276,7 +276,15 @@ class CreateOnlineNoteActivity : AppCompatActivity() {
                             false
                         }
                         else {
-                            val noteTitle = noteTitleEdt.text.toString()
+                            var noteTitle = noteTitleEdt.text.toString()
+
+                            noteTitle = noteTitle.replace(".","")
+                            noteTitle = noteTitle.replace("$","_dol_")
+                            noteTitle = noteTitle.replace("[","(")
+                            noteTitle = noteTitle.replace("]",")")
+                            noteTitle = noteTitle.replace("#","_hash_")
+                            noteTitle = noteTitle.replace("/","_")
+
                             val noteDescription = noteDescEdt.text.toString()
 
                             val reference = Firebase.storage.reference.child("notes")

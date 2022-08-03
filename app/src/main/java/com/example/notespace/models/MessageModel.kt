@@ -6,5 +6,7 @@ data class MessageModel(
     var senderId: String? = null,
     var receiverId: String? = null,
     var time: Long? = 0L,
-    var groupUsername: String? = null
+    var groupUsername: String? = null,
+    var groupUid : String? = null,
+    var createdBy : String? = null
 )

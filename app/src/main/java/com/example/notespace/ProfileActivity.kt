@@ -87,12 +87,6 @@ class ProfileActivity : AppCompatActivity() {
 
     private var arrayListOfRewards = ArrayList<RankModel>()
 
-    override fun onPause() {
-        super.onPause()
-        MainActivity().finish()
-        this.finish()
-        dialog.dismiss()
-    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -158,112 +152,9 @@ class ProfileActivity : AppCompatActivity() {
 
 
         deleteAccountButton.setOnClickListener {
+            dialog.dismiss()
+            startActivity(Intent(this,DeleteAccountActivity::class.java))
 
-            val reference = FirebaseStorage.getInstance()
-
-            var uidArrayList = ArrayList<String>()
-            try {
-                Firebase.database.reference.child("libraryOfPdfUrls")
-                    .child(Firebase.auth.currentUser!!.uid)
-                    .addListenerForSingleValueEvent(object : ValueEventListener{
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            if(snapshot.exists()){
-                                uidArrayList.clear()
-                                for(item in snapshot.children){
-                                    try {
-                                        Firebase.database.reference.child("libraryOfPdfUrls")
-                                            .child(Firebase.auth.currentUser!!.uid)
-                                            .child(item.key.toString())
-                                            .addListenerForSingleValueEvent(object : ValueEventListener {
-                                                override fun onDataChange(snapshot: DataSnapshot) {
-                                                    if(snapshot.exists()){
-                                                        for (item in snapshot.children) {
-                                                            var count = 0
-                                                            for (i in item.children) {
-                                                                Log.i("abcdefgh", i.value.toString())
-                                                                count++
-                                                            }
-                                                            if (count > 0 || item.value.toString() == "folderTrue") {
-                                                                continue
-                                                            } else {
-                                                                uidArrayList.add(item.value.toString())
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                override fun onCancelled(error: DatabaseError) {
-                                                    TODO("Not yet implemented")
-                                                }
-
-                                            })
-                                    } catch (e: Exception) {
-                                    }
-                                }
-                            }
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            TODO("Not yet implemented")
-                        }
-
-                    })
-            } catch (e: Exception) {
-            }
-
-
-
-            val builder = MaterialAlertDialogBuilder(this)
-            builder.setTitle("Are you sure you want to Delete this account permanently?")
-            builder.setCancelable(false)
-                .setPositiveButton("Yes") { dialogL, id ->
-
-
-                    try {
-                        FirebaseDatabase.getInstance().reference.child("users")
-                            .child(Firebase.auth.currentUser!!.uid)
-                            .removeValue().addOnSuccessListener {
-                                FirebaseDatabase.getInstance().reference.child("Library")
-                                    .child(Firebase.auth.currentUser!!.uid)
-                                    .removeValue().addOnSuccessListener {
-                                            try {
-                                                for (item in uidArrayList) {
-                                                    val ref = reference.getReferenceFromUrl(item)
-                                                    ref.delete()
-                                                }
-                                                Firebase.database.reference.child("libraryOfPdfUrls")
-                                                    .child(Firebase.auth.currentUser!!.uid)
-                                                    .removeValue()
-                                            } catch (e: Exception) {
-                                            }
-
-
-                                        try {
-                                                Firebase.auth.currentUser!!.delete()
-                                                    .addOnSuccessListener {
-                                                        Toast.makeText(this, "Account Deleted Permanently", Toast.LENGTH_SHORT).show()
-                                                        startActivity(Intent(this, SignInActivity::class.java))
-                                                    }
-
-
-                                        }
-                                        catch (e: Exception) {
-                                            e.printStackTrace()
-                                        }
-                                    }
-
-                            }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-
-
-                }
-                .setNegativeButton("No") { dialog, id ->
-                    dialog.dismiss()
-                }
-            val alert = builder.create()
-            alert.show()
         }
 
         accountPrivateAlertDialogBtn.setOnClickListener {

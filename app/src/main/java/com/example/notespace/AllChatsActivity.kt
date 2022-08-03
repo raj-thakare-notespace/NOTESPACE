@@ -56,15 +56,17 @@ class AllChatsActivity : AppCompatActivity() {
             .child("chatted_list")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    chattedList.clear()
-                    for (item in snapshot.children) {
-                        val model = item.getValue(AllChatModel::class.java)!!
-                        Log.i("model11", model.toString())
-                        chattedList.add(model)
+                    if(snapshot.exists()){
+                        chattedList.clear()
+                        for (item in snapshot.children) {
+                            val model = item.getValue(AllChatModel::class.java)!!
+                            Log.i("model11", model.toString())
+                            chattedList.add(model)
+                        }
+                        Log.i("uyt", chattedList.toString())
+                        arrayListAllChat.addAll(chattedList)
+                        allChatAdapter.notifyDataSetChanged()
                     }
-                    Log.i("uyt", chattedList.toString())
-                    arrayListAllChat.addAll(chattedList)
-                    allChatAdapter.notifyDataSetChanged()
                 }
 
                 override fun onCancelled(error: DatabaseError) {

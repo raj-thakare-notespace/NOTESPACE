@@ -108,8 +108,11 @@ class HomeFragment : Fragment() {
                         post!!.postId = dataSnapshot.key.toString()
 
 
-                        if (post.postedBy == Firebase.auth.currentUser!!.uid) {
-                            stack.add(post)
+                        try {
+                            if (post.postedBy == Firebase.auth.currentUser!!.uid) {
+                                stack.add(post)
+                            }
+                        } catch (e: Exception) {
                         }
 
                         if (followingList.contains(post.postedBy)) {

@@ -58,18 +58,38 @@ class MessageAdapter(val context: Context, private val messageModelList: ArrayLi
                                         for (item in snapshot.children) {
                                             var messageModell = item.getValue(MessageModel::class.java)
                                             val currentMessageId = item.key
-                                            if (messageModell!!.message == currentMessage.message) {
+                                            if (messageModell!!.time == currentMessage.time) {
                                                 FirebaseDatabase.getInstance().reference.child("chats")
                                                     .child(currentMessage.receiverId + currentMessage.senderId)
                                                     .child("messages")
                                                     .child(currentMessageId.toString()).removeValue()
                                                     .addOnCompleteListener {
                                                         if (it.isSuccessful) {
-                                                            Toast.makeText(
-                                                                context,
-                                                                "Message deleted.",
-                                                                Toast.LENGTH_SHORT
-                                                            ).show()
+                                                            FirebaseDatabase.getInstance().reference.child("chats")
+                                                                .child(currentMessage.senderId + currentMessage.receiverId)
+                                                                .child("messages")
+                                                                .addValueEventListener(object : ValueEventListener {
+                                                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                                                        if(snapshot.exists()){
+                                                                            for (item in snapshot.children) {
+                                                                                var messageModell = item.getValue(MessageModel::class.java)
+                                                                                val currentMessageId = item.key
+                                                                                if (messageModell!!.time == currentMessage.time) {
+                                                                                    FirebaseDatabase.getInstance().reference.child("chats")
+                                                                                        .child(currentMessage.senderId + currentMessage.receiverId)
+                                                                                        .child("messages")
+                                                                                        .child(currentMessageId.toString()).removeValue()
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+
+                                                                    override fun onCancelled(error: DatabaseError) {
+                                                                        TODO("Not yet implemented")
+                                                                    }
+
+                                                                })
+
                                                         }
                                                     }
                                             }
@@ -83,40 +103,37 @@ class MessageAdapter(val context: Context, private val messageModelList: ArrayLi
 
                             })
 
-                        // to check in group chat
-                        FirebaseDatabase.getInstance().reference.child("groupChat")
-                            .child(currentMessage.groupUsername.toString())
-                            .child("messages")
-                            .addValueEventListener(object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    if(snapshot.exists()){
-                                        for (item in snapshot.children) {
-                                            var messageModell = item.getValue(MessageModel::class.java)
-                                            val currentMessageId = item.key
-                                            if (messageModell!!.message == currentMessage.message) {
-                                                FirebaseDatabase.getInstance().reference.child("groupChat")
-                                                    .child(currentMessage.groupUsername.toString())
-                                                    .child("messages")
-                                                    .child(currentMessageId.toString())
-                                                    .removeValue().addOnCompleteListener {
-                                                        if (it.isSuccessful) {
-                                                            Toast.makeText(
-                                                                context,
-                                                                "Message deleted.",
-                                                                Toast.LENGTH_SHORT
-                                                            ).show()
+                        if(currentMessage.createdBy == Firebase.auth.currentUser!!.uid){
+                            // to check in group chat
+                            FirebaseDatabase.getInstance().reference.child("groupChat")
+                                .child(currentMessage.groupUid.toString())
+                                .child("messages")
+                                .addValueEventListener(object : ValueEventListener {
+                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                        if(snapshot.exists()){
+                                            for (item in snapshot.children) {
+                                                var messageModell = item.getValue(MessageModel::class.java)
+                                                val currentMessageId = item.key
+                                                if (messageModell!!.time == currentMessage.time) {
+                                                    FirebaseDatabase.getInstance().reference.child("groupChat")
+                                                        .child(currentMessage.groupUid.toString())
+                                                        .child("messages")
+                                                        .child(currentMessageId.toString())
+                                                        .removeValue().addOnSuccessListener {
+                                                            notifyDataSetChanged()
                                                         }
-                                                    }
+                                                }
                                             }
                                         }
                                     }
-                                }
 
-                                override fun onCancelled(error: DatabaseError) {
-                                    TODO("Not yet implemented")
-                                }
+                                    override fun onCancelled(error: DatabaseError) {
+                                        TODO("Not yet implemented")
+                                    }
 
-                            })
+                                })
+                        }
+
                     } catch (e: Exception) {
                     }
 
