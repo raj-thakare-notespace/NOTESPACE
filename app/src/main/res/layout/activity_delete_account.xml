@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DeleteAccountActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/deleteAccountAppBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/transparent"
+        app:elevation="0dp"
+        android:elevation="0dp"
+        style="@style/Widget.Design.AppBarLayout"
+        app:liftOnScroll="true"
+        >
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/deleteAccountToolBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="?attr/colorOnSurface"
+            app:title="Delete Account"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:elevation="0dp"
+            android:elevation="0dp"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:titleTextAppearance="?attr/textAppearanceTitleLarge"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <TextView
+        android:id="@+id/deleteAccounTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/deleteAccountButtonActivity"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/kurale"
+        android:gravity="start"
+        android:text="Are you sure you want to delete this account permanently? \nOnce you delete this account your complete data will be deleted permanently."
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/deleteAccountButtonActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:backgroundTint="@color/red"
+        android:text="DELETE ACCOUNT"
+        app:rippleColor="#F1EEEE" />
+
+
+</RelativeLayout>
