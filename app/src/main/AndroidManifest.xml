@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.notespace">
+    package="com.startup.notespace">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -17,39 +17,39 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NOTESPACE">
         <activity
-            android:name=".PrivacyPolicyActivity"
+            android:name="com.startup.notespace.PrivacyPolicyActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".DeleteAccountActivity"
+            android:name="com.startup.notespace.DeleteAccountActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ViewDocumentActivityPost"
+            android:name="com.startup.notespace.ViewDocumentActivityPost"
             android:exported="false" />
         <activity
-            android:name=".DocumentPostsActivityOther"
+            android:name="com.startup.notespace.DocumentPostsActivityOther"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AboutUsActivity"
+            android:name="com.startup.notespace.AboutUsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".FeedbackActivity"
+            android:name="com.startup.notespace.FeedbackActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SignUpVerification"
+            android:name="com.startup.notespace.SignUpVerification"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".GroupProfileOther"
+            android:name="com.startup.notespace.GroupProfileOther"
             android:exported="false"
             android:screenOrientation="portrait" />
 
         <service
-            android:name=".FirebaseService"
+            android:name="com.startup.notespace.FirebaseService"
             android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
@@ -59,75 +59,75 @@
         </service>
 
         <activity
-            android:name=".RequestsActivity"
+            android:name="com.startup.notespace.RequestsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".DocumentPostsActivity"
+            android:name="com.startup.notespace.DocumentPostsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".NotesActivityOther"
+            android:name="com.startup.notespace.NotesActivityOther"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".NoteDetailActivity"
+            android:name="com.startup.notespace.NoteDetailActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".NotesActivity"
+            android:name="com.startup.notespace.NotesActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MyLibrary3"
+            android:name="com.startup.notespace.MyLibrary3"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".PostDetailActivity"
+            android:name="com.startup.notespace.PostDetailActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".GroupMembersActivity"
+            android:name="com.startup.notespace.GroupMembersActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".FollowersListActivityOther"
+            android:name="com.startup.notespace.FollowersListActivityOther"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".FollowingListActivityOther"
+            android:name="com.startup.notespace.FollowingListActivityOther"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".FollowersListActivity"
+            android:name="com.startup.notespace.FollowersListActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".FollowingListActivity"
+            android:name="com.startup.notespace.FollowingListActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AllChatsActivity"
+            android:name="com.startup.notespace.AllChatsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Library2"
+            android:name="com.startup.notespace.Library2"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Library3"
+            android:name="com.startup.notespace.Library3"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MyLibrary2"
+            android:name="com.startup.notespace.MyLibrary2"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MyLibraryActivity"
+            android:name="com.startup.notespace.MyLibraryActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SplashScreen"
+            android:name="com.startup.notespace.SplashScreen"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -137,86 +137,86 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ViewDocumentActivity"
+            android:name="com.startup.notespace.ViewDocumentActivity"
             android:exported="false" />
         <activity
-            android:name=".ForgotPasswordActivity"
+            android:name="com.startup.notespace.ForgotPasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".GroupLibrary"
+            android:name="com.startup.notespace.GroupLibrary"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Library1"
+            android:name="com.startup.notespace.Library1"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".LibraryActivity"
+            android:name="com.startup.notespace.LibraryActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".GroupChatActivity"
+            android:name="com.startup.notespace.GroupChatActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".GroupProfileEditActivity"
+            android:name="com.startup.notespace.GroupProfileEditActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".GroupProfileActivity"
+            android:name="com.startup.notespace.GroupProfileActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ChatActivity"
+            android:name="com.startup.notespace.ChatActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".OtherUsersProfileActivity"
+            android:name="com.startup.notespace.OtherUsersProfileActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SavedActivity"
+            android:name="com.startup.notespace.SavedActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MyLibrary1"
+            android:name="com.startup.notespace.MyLibrary1"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MakePostActivity"
+            android:name="com.startup.notespace.MakePostActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".EditProfileActivity"
+            android:name="com.startup.notespace.EditProfileActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SignInActivity"
+            android:name="com.startup.notespace.SignInActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SignUpActivity"
+            android:name="com.startup.notespace.SignUpActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".YourNotesActivity"
+            android:name="com.startup.notespace.YourNotesActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CreateNoteActivity"
+            android:name="com.startup.notespace.CreateNoteActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CreateOnlineNoteActivity"
+            android:name="com.startup.notespace.CreateOnlineNoteActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ProfileActivity"
+            android:name="com.startup.notespace.ProfileActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.startup.notespace.MainActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
     </application>
