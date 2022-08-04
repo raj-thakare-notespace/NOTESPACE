@@ -53,26 +53,29 @@ class EditProfileActivity : AppCompatActivity() {
             finish()
         }
 
-        FirebaseDatabase.getInstance().reference.child("users")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        arrayList.clear()
-                        for (item in snapshot.children) {
-                            val usernameL = item.child("username").value
-                            if(usernameL.toString() == currentUsername) {
-                                continue
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            arrayList.clear()
+                            for (item in snapshot.children) {
+                                val usernameL = item.child("username").value
+                                if(usernameL.toString() == currentUsername) {
+                                    continue
+                                }
+                                arrayList.add(usernameL.toString())
                             }
-                            arrayList.add(usernameL.toString())
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
 
 
@@ -92,6 +95,11 @@ class EditProfileActivity : AppCompatActivity() {
 
                     if(username.isEmpty()){
                         editProfileUsernameET.error = "Username cannot be empty."
+                        linearProgressIndicator.visibility = View.GONE
+                        linearProgressIndicator.visibility = View.GONE
+                    }
+                    else if(username.contains(" ")){
+                        editProfileUsernameET.error = "Cannot contain spaces."
                         linearProgressIndicator.visibility = View.GONE
                     }
                     else if (arrayList.contains(username)) {

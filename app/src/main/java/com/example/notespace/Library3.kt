@@ -45,6 +45,7 @@ class Library3 : AppCompatActivity() {
     lateinit var docAdapter: Library3Adapter
     var userId = ""
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_library_3)
@@ -108,40 +109,43 @@ class Library3 : AppCompatActivity() {
         Log.i("keyNvalue", folderDetailToolbar.title.toString())
 
 
-        FirebaseDatabase.getInstance().reference.child("Library")
-            .child(userId)
-            .child(folderName1)
-            .child(folderName2)
-            .child(folderName3)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    for (item in snapshot.children) {
-                        var name = item.key
-                        var uri = item.value
+        try {
+            FirebaseDatabase.getInstance().reference.child("Library")
+                .child(userId)
+                .child(folderName1)
+                .child(folderName2)
+                .child(folderName3)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for (item in snapshot.children) {
+                            var name = item.key
+                            var uri = item.value
 
 
 
-                        arrayListDoc.add(MyLibrary3Model(userId,name.toString(),uri.toString(),folderName1,folderName2,folderName3))
-                        docAdapter.notifyDataSetChanged()
+                            arrayListDoc.add(MyLibrary3Model(userId,name.toString(),uri.toString(),folderName1,folderName2,folderName3))
+                            docAdapter.notifyDataSetChanged()
 
-//                        Log.i("keyNvalue", name + uri)
-//                        if (item.value == "folderTrue") {
-//                            continue
-//                        } else {
-//
-//                            arrayListDoc.add(MyLibrary3Model(uid,name.toString(),uri.toString(),folderName1,folderName2,folderName3))
-//                            docAdapter.notifyDataSetChanged()
-//
-//                        }
+    //                        Log.i("keyNvalue", name + uri)
+    //                        if (item.value == "folderTrue") {
+    //                            continue
+    //                        } else {
+    //
+    //                            arrayListDoc.add(MyLibrary3Model(uid,name.toString(),uri.toString(),folderName1,folderName2,folderName3))
+    //                            docAdapter.notifyDataSetChanged()
+    //
+    //                        }
 
+                        }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
 
     }

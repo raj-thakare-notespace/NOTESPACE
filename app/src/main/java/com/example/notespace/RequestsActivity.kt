@@ -37,23 +37,27 @@ class RequestsActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        FirebaseDatabase.getInstance().reference.child("users")
-            .child(Firebase.auth.currentUser!!.uid)
-            .child("request_list")
-            .addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    for(item in snapshot.children){
-                        var model = item.getValue(RequestModel::class.java)
-                        arrayList.add(model!!)
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .child(Firebase.auth.currentUser!!.uid)
+                .child("request_list")
+                .addValueEventListener(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        arrayList.clear()
+                        for(item in snapshot.children){
+                            var model = item.getValue(RequestModel::class.java)
+                            arrayList.add(model!!)
+                        }
                         adapter.notifyDataSetChanged()
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
     }
 }

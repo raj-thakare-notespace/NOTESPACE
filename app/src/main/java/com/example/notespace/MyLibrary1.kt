@@ -69,6 +69,12 @@ class MyLibrary1 : AppCompatActivity() {
     var uid = ""
 
 
+    override fun onDestroy() {
+        super.onDestroy()
+        MyLibrary2().finish()
+        MyLibrary3().finish()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_library_1)
@@ -99,23 +105,25 @@ class MyLibrary1 : AppCompatActivity() {
 
         })
 
-        // To get names of the folders from the database
-        FirebaseDatabase.getInstance().reference.child("Library").child(uid)
-            .child(previousFolderName).addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        folderNameList.clear()
-                        for(item in snapshot.children){
-                            folderNameList.add(item.key.toString())
+        try {// To get names of the folders from the database
+            FirebaseDatabase.getInstance().reference.child("Library").child(uid)
+                .child(previousFolderName).addValueEventListener(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            folderNameList.clear()
+                            for(item in snapshot.children){
+                                folderNameList.add(item.key.toString())
+                            }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
         fileNotFoundIV = findViewById(R.id.fileNotFoundIV)
 
@@ -126,6 +134,8 @@ class MyLibrary1 : AppCompatActivity() {
 
         folderDetailToolbar.setNavigationOnClickListener {
             finish()
+            MyLibrary2().finish()
+            MyLibrary3().finish()
         }
 
         folderDetailToolbar.setOnMenuItemClickListener {
@@ -206,42 +216,45 @@ class MyLibrary1 : AppCompatActivity() {
         Log.i("keyNvalue", folderDetailToolbar.title.toString())
 
 
-        FirebaseDatabase.getInstance().reference.child("Library")
-            .child(uid)
-            .child(previousFolderName)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        arrayListDoc.clear()
-                        for (item in snapshot.children) {
-                            var name = item.key
-                            var uri = item.value
-                            var count = 0
-                            for(i in item.children){
-                                Log.i("abcdefgh",i.value.toString())
-                                count++
-                            }
-                            Log.i("keyNvalue", count.toString())
-                            if(count > 0 || item.value.toString() == "folderTrue"){
+        try {
+            FirebaseDatabase.getInstance().reference.child("Library")
+                .child(uid)
+                .child(previousFolderName)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            arrayListDoc.clear()
+                            for (item in snapshot.children) {
+                                var name = item.key
+                                var uri = item.value
+                                var count = 0
+                                for(i in item.children){
+                                    Log.i("abcdefgh",i.value.toString())
+                                    count++
+                                }
+                                Log.i("keyNvalue", count.toString())
+                                if(count > 0 || item.value.toString() == "folderTrue"){
 
-                                arrayListDoc.add(MyLibrary1Model(uid,"","",previousFolderName,name.toString()))
-                                myLibrary1Adapter.notifyDataSetChanged()
-                            }
-                            else{
-                                arrayListDoc.add(MyLibrary1Model(uid,name.toString(),uri.toString(),previousFolderName,""))
-                                myLibrary1Adapter.notifyDataSetChanged()
-                            }
+                                    arrayListDoc.add(MyLibrary1Model(uid,"","",previousFolderName,name.toString()))
+                                    myLibrary1Adapter.notifyDataSetChanged()
+                                }
+                                else{
+                                    arrayListDoc.add(MyLibrary1Model(uid,name.toString(),uri.toString(),previousFolderName,""))
+                                    myLibrary1Adapter.notifyDataSetChanged()
+                                }
 
+                            }
                         }
+
                     }
 
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
+                })
+        } catch (e: Exception) {
+        }
 
 
         addDocButton.setOnClickListener {

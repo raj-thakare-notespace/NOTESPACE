@@ -10,8 +10,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.notespace.OtherUsersProfileActivity
+import com.example.notespace.ProfileActivity
 import com.example.notespace.R
 import com.example.notespace.models.AllChatModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
 
 // Adapter to list  down following users or followers of any profile
@@ -43,12 +46,24 @@ class FollowingFollowersAdapter(val context: Context, val arrayList: ArrayList<A
 
         holder.deleteIcon.visibility = View.INVISIBLE
 
-
         holder.itemView.setOnClickListener {
-            val intent = Intent(it.context, OtherUsersProfileActivity::class.java)
-            intent.putExtra("uid", model.uid)
-            context.startActivity(intent)
+            if(model.uid == Firebase.auth.currentUser!!.uid){
+                val intent = Intent(it.context, ProfileActivity::class.java)
+                intent.putExtra("uid", model.uid)
+                intent.putExtra("username", model.username)
+                intent.putExtra("profilePicture", model.profilePicture)
+                context.startActivity(intent)
+            }
+            else{
+                val intent = Intent(it.context, OtherUsersProfileActivity::class.java)
+                intent.putExtra("uid", model.uid)
+                intent.putExtra("username", model.username)
+                intent.putExtra("profilePicture", model.profilePicture)
+                context.startActivity(intent)
+            }
+
         }
+
     }
 
     override fun getItemCount(): Int {

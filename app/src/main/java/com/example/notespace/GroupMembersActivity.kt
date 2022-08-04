@@ -33,20 +33,23 @@ class GroupMembersActivity : AppCompatActivity() {
 
         val uid = intent.getStringExtra("groupUid")
 
-        FirebaseDatabase.getInstance()
-            .reference.child("users")
-            .child(uid.toString())
-            .addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val model = snapshot.getValue(Group::class.java)
-                    groupCreatedBy = model!!.createdBy
-                }
+        try {
+            FirebaseDatabase.getInstance()
+                .reference.child("users")
+                .child(uid.toString())
+                .addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val model = snapshot.getValue(Group::class.java)
+                        groupCreatedBy = model!!.createdBy
+                    }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
         allChatAdapter = MembersAdapter(this, arrayListAllFollowers)
 
@@ -66,56 +69,61 @@ class GroupMembersActivity : AppCompatActivity() {
 
         var membersUidsList: ArrayList<String> = ArrayList()
 
-        // To get all the group members uids
-        FirebaseDatabase.getInstance().reference.child("users")
-            .child(uid.toString())
-            .child("members")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        membersUidsList.clear()
-                        for (item in snapshot.children) {
-                            membersUidsList.add(item.key.toString())
-                        }
-                    }
-
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
-
-        FirebaseDatabase.getInstance().reference.child("users")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-
-                    if(snapshot.exists()){
-                        arrayListAllFollowers.clear()
-                        for (i in snapshot.children) {
-
-                            if (membersUidsList.contains(i.key.toString())) {
-
-
-                                val model = i.getValue(GroupMemberModel::class.java)!!
-                                model.groupUid = uid.toString()
-                                model.createdBy = groupCreatedBy
-                                arrayListAllFollowers.add(model)
-                                Log.i("wuff", model.toString())
-                                allChatAdapter.notifyDataSetChanged()
-
+        try {// To get all the group members uids
+            FirebaseDatabase.getInstance().reference.child("users")
+                .child(uid.toString())
+                .child("members")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            membersUidsList.clear()
+                            for (item in snapshot.children) {
+                                membersUidsList.add(item.key.toString())
                             }
                         }
+
                     }
 
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-                }
+                })
+        } catch (e: Exception) {
+        }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+
+                        if(snapshot.exists()){
+                            arrayListAllFollowers.clear()
+                            for (i in snapshot.children) {
+
+                                if (membersUidsList.contains(i.key.toString())) {
+
+
+                                    val model = i.getValue(GroupMemberModel::class.java)!!
+                                    model.groupUid = uid.toString()
+                                    model.createdBy = groupCreatedBy
+                                    arrayListAllFollowers.add(model)
+                                    Log.i("wuff", model.toString())
+                                    allChatAdapter.notifyDataSetChanged()
+
+                                }
+                            }
+                        }
+
+
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                })
+        } catch (e: Exception) {
+        }
 
     }
 }

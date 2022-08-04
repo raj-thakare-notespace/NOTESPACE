@@ -63,32 +63,35 @@ class GroupProfileEditActivity : AppCompatActivity() {
         val auth = Firebase.auth
 
 
-        FirebaseDatabase.getInstance().reference.child("users")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
 
-                    if (snapshot.exists()) {
-                        arrayList.clear()
+                        if (snapshot.exists()) {
+                            arrayList.clear()
 
-                        for (item in snapshot.children) {
-                            val usernameL = item.child("username").value
-                            if (usernameL.toString() == usernameGroup) {
-                                continue
+                            for (item in snapshot.children) {
+                                val usernameL = item.child("username").value
+                                if (usernameL.toString() == usernameGroup) {
+                                    continue
+                                }
+                                Log.i("bjp", usernameL.toString())
+                                arrayList.add(usernameL.toString())
                             }
-                            Log.i("bjp", usernameL.toString())
-                            arrayList.add(usernameL.toString())
-                        }
 
+
+                        }
 
                     }
 
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
+                })
+        } catch (e: Exception) {
+        }
 
 
         editProfileToolBar.setOnMenuItemClickListener {

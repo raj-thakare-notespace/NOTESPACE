@@ -112,7 +112,7 @@ class MembersAdapter(val context: Context, val arrayList: ArrayList<GroupMemberM
 
 
         holder.itemView.setOnClickListener {
-            if(model.uid == model.createdBy){
+            if(model.uid == Firebase.auth.currentUser!!.uid){
                 val intent = Intent(it.context, ProfileActivity::class.java)
                 intent.putExtra("uid", model.uid)
                 intent.putExtra("username", model.username)

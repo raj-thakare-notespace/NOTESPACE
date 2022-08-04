@@ -112,6 +112,7 @@ class MyLibrary3 : AppCompatActivity() {
 
         })
 
+
         fileNotFoundIV = findViewById(R.id.fileNotFoundIV)
 
         progressDialog = ProgressDialog(this)
@@ -135,37 +136,40 @@ class MyLibrary3 : AppCompatActivity() {
 
 
 
-        FirebaseDatabase.getInstance().reference.child("Library")
-            .child(uid)
-            .child(folderName1)
-            .child(folderName2)
-            .child(folderName3)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        arrayListDoc.clear()
-                        for (item in snapshot.children) {
-                            var name = item.key
-                            var uri = item.value
-                            Log.i("keyNvalue", name + uri)
-                            if(item.value == "folderTrue"){
-                                continue
-                            }
-                            else{
-                                arrayListDoc.add(MyLibrary3Model(uid,name.toString(),uri.toString(),folderName1,folderName2,folderName3))
-                                myLibraryAdapter.notifyDataSetChanged()
-                            }
+        try {
+            FirebaseDatabase.getInstance().reference.child("Library")
+                .child(uid)
+                .child(folderName1)
+                .child(folderName2)
+                .child(folderName3)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            arrayListDoc.clear()
+                            for (item in snapshot.children) {
+                                var name = item.key
+                                var uri = item.value
+                                Log.i("keyNvalue", name + uri)
+                                if(item.value == "folderTrue"){
+                                    continue
+                                }
+                                else{
+                                    arrayListDoc.add(MyLibrary3Model(uid,name.toString(),uri.toString(),folderName1,folderName2,folderName3))
+                                    myLibraryAdapter.notifyDataSetChanged()
+                                }
 
+                            }
                         }
+
                     }
 
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
+                })
+        } catch (e: Exception) {
+        }
 
 
         addDocButton.setOnClickListener {

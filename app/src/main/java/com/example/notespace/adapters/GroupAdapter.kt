@@ -166,6 +166,7 @@ class GroupAdapter(val context: Context, var arrayList: ArrayList<Group>) :
             } catch (e: Exception) {
             }
 
+            notifyDataSetChanged()
 
         }
 

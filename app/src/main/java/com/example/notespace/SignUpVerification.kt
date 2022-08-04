@@ -22,24 +22,30 @@ class SignUpVerification : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        Firebase.auth.currentUser!!.reload().addOnSuccessListener {
-            if (Firebase.auth.currentUser!!.isEmailVerified) {
-                registerUserOnDatabase(
-                    intent.getStringExtra("username").toString(),
-                    intent.getStringExtra("displayName").toString(),
-                    intent.getStringExtra("email").toString(),
-                    intent.getStringExtra("password").toString()
-                )
+        try {
+            Firebase.auth.currentUser!!.reload().addOnSuccessListener {
+                if (Firebase.auth.currentUser!!.isEmailVerified) {
+                    registerUserOnDatabase(
+                        intent.getStringExtra("username").toString(),
+                        intent.getStringExtra("displayName").toString(),
+                        intent.getStringExtra("email").toString(),
+                        intent.getStringExtra("password").toString()
+                    )
+                }
             }
+        } catch (e: Exception) {
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Firebase.auth.currentUser!!.reload().addOnSuccessListener {
-            if(!Firebase.auth.currentUser!!.isEmailVerified){
-                Firebase.auth.currentUser!!.delete()
+        try {
+            Firebase.auth.currentUser!!.reload().addOnSuccessListener {
+                if(!Firebase.auth.currentUser!!.isEmailVerified){
+                    Firebase.auth.currentUser!!.delete()
+                }
             }
+        } catch (e: Exception) {
         }
     }
 
@@ -61,24 +67,30 @@ class SignUpVerification : AppCompatActivity() {
         val user = Firebase.auth.currentUser!!
 
 
-        confirmButton.setOnClickListener {
-            user.reload().addOnSuccessListener {
-                if (user.isEmailVerified) {
-                    registerUserOnDatabase(username, displayName, email, password)
-                }
-                else if(!user.isEmailVerified){
-                    Toast.makeText(this, "Please verify email.", Toast.LENGTH_SHORT).show()
+        try {
+            confirmButton.setOnClickListener {
+                user.reload().addOnSuccessListener {
+                    if (user.isEmailVerified) {
+                        registerUserOnDatabase(username, displayName, email, password)
+                    }
+                    else if(!user.isEmailVerified){
+                        Toast.makeText(this, "Please verify email.", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
+        } catch (e: Exception) {
         }
 
         button.setOnClickListener {
-            val user = Firebase.auth.currentUser!!
-            user.reload()
-            user.sendEmailVerification().addOnSuccessListener {
-                Toast.makeText(this, "Verification Email Has Been Sent.", Toast.LENGTH_SHORT).show()
-            }.addOnFailureListener {
-                Toast.makeText(this, "Failure occurred", Toast.LENGTH_SHORT).show()
+            try {
+                val user = Firebase.auth.currentUser!!
+                user.reload()
+                user.sendEmailVerification().addOnSuccessListener {
+                    Toast.makeText(this, "Verification Email Has Been Sent.", Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener {
+                    Toast.makeText(this, "Failure occurred", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
             }
         }
     }
@@ -125,7 +137,7 @@ class SignUpVerification : AppCompatActivity() {
                         }
                     }
                     startActivity(Intent(this, MainActivity::class.java))
-                    this.finish()
+                    SignUpVerification().finish()
                 }
             }
     }

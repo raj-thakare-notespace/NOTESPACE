@@ -57,29 +57,33 @@ class GroupChatActivity : AppCompatActivity() {
     }
 
     private fun refreshGroupMessages(){
-        FirebaseDatabase.getInstance().reference
-            .child("groupChat")
-            .child(uid!!)
-            .child("messages")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        messageList.clear()
-                        for (dataSnapshot in snapshot.children) {
-                            val model = dataSnapshot.getValue(MessageModel::class.java)!!
-                            model.createdBy = createdBy
-                            messageList.add(model!!)
-                            chatRecyclerView.smoothScrollToPosition(messageList.count() - 1)
+
+        try {
+            FirebaseDatabase.getInstance().reference
+                .child("groupChat")
+                .child(uid!!)
+                .child("messages")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            messageList.clear()
+                            for (dataSnapshot in snapshot.children) {
+                                val model = dataSnapshot.getValue(MessageModel::class.java)!!
+                                model.createdBy = createdBy
+                                messageList.add(model!!)
+                                chatRecyclerView.smoothScrollToPosition(messageList.count() - 1)
+                            }
+                            messageAdapter.notifyDataSetChanged()
                         }
-                        messageAdapter.notifyDataSetChanged()
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
     }
 
 
@@ -158,62 +162,68 @@ class GroupChatActivity : AppCompatActivity() {
 
         chatRecyclerView.adapter = messageAdapter
 
-        FirebaseDatabase.getInstance().reference
-            .child("groupChat")
-            .child(uid!!)
-            .child("messages")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        messageList.clear()
-                        for (dataSnapshot in snapshot.children) {
-                            val model = dataSnapshot.getValue(MessageModel::class.java)!!
-                            model.createdBy = createdBy
-                            messageList.add(model!!)
-                            chatRecyclerView.smoothScrollToPosition(messageList.count() - 1)
-                        }
-                        messageAdapter.notifyDataSetChanged()
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
-
-        FirebaseDatabase.getInstance().reference.child("users")
-            .child(uid).child("members")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        for (item in snapshot.children) {
-                            if(item.key.toString() == Firebase.auth.currentUser!!.uid){
-                                continue
+        try {
+            FirebaseDatabase.getInstance().reference
+                .child("groupChat")
+                .child(uid!!)
+                .child("messages")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            messageList.clear()
+                            for (dataSnapshot in snapshot.children) {
+                                val model = dataSnapshot.getValue(MessageModel::class.java)!!
+                                model.createdBy = createdBy
+                                messageList.add(model!!)
+                                chatRecyclerView.smoothScrollToPosition(messageList.count() - 1)
                             }
-                            FirebaseDatabase.getInstance().reference.child("users")
-                                .child(item.key.toString())
-                                .child("token")
-                                .addListenerForSingleValueEvent(object : ValueEventListener {
-                                    override fun onDataChange(snapshot: DataSnapshot) {
-                                        arrayListMembersToken.add(snapshot.value.toString())
-                                    }
-
-                                    override fun onCancelled(error: DatabaseError) {
-                                        TODO("Not yet implemented")
-                                    }
-
-                                })
-
+                            messageAdapter.notifyDataSetChanged()
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
+
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .child(uid).child("members")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            for (item in snapshot.children) {
+                                if(item.key.toString() == Firebase.auth.currentUser!!.uid){
+                                    continue
+                                }
+                                FirebaseDatabase.getInstance().reference.child("users")
+                                    .child(item.key.toString())
+                                    .child("token")
+                                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                                        override fun onDataChange(snapshot: DataSnapshot) {
+                                            arrayListMembersToken.add(snapshot.value.toString())
+                                        }
+
+                                        override fun onCancelled(error: DatabaseError) {
+                                            TODO("Not yet implemented")
+                                        }
+
+                                    })
+
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+        } catch (e: Exception) {
+        }
 
         sendButton.setOnClickListener {
 
@@ -255,26 +265,29 @@ class GroupChatActivity : AppCompatActivity() {
 
     private fun refreshMessages(uid: String, messageList: ArrayList<MessageModel>) {
 
-        FirebaseDatabase.getInstance().reference.child("groupChat").child(uid!!)
-            .child("messages")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        messageList.clear()
-                        for (postSnapshot in snapshot.children) {
-                            val message = postSnapshot.getValue(MessageModel::class.java)
-                            messageList.add(message!!)
-                            chatRecyclerView.smoothScrollToPosition(messageList.count() - 1)
+        try {
+            FirebaseDatabase.getInstance().reference.child("groupChat").child(uid!!)
+                .child("messages")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            messageList.clear()
+                            for (postSnapshot in snapshot.children) {
+                                val message = postSnapshot.getValue(MessageModel::class.java)
+                                messageList.add(message!!)
+                                chatRecyclerView.smoothScrollToPosition(messageList.count() - 1)
+                            }
+                            messageAdapter.notifyDataSetChanged()
                         }
-                        messageAdapter.notifyDataSetChanged()
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
+                    override fun onCancelled(error: DatabaseError) {
 
-                }
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
     }
 

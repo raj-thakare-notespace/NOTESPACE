@@ -66,26 +66,31 @@ class NotesActivityOther : AppCompatActivity() {
         })
 
 
-        FirebaseDatabase.getInstance().reference.child("notes")
-            .child(userId.toString())
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    arrayList.clear()
-                    for(item in snapshot.children){
-                        val model = item.getValue(NoteModel::class.java)
-                        if(model!!.isPrivate){
-                            continue
+        try {
+            FirebaseDatabase.getInstance().reference.child("notes")
+                .child(userId.toString())
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            arrayList.clear()
+                            for(item in snapshot.children){
+                                val model = item.getValue(NoteModel::class.java)
+                                if(model!!.isPrivate){
+                                    continue
+                                }
+                                arrayList.add(model!!)
+                                adapter.notifyDataSetChanged()
+                            }
                         }
-                        arrayList.add(model!!)
-                        adapter.notifyDataSetChanged()
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
     }
 
     private fun filterList(text: String?) {

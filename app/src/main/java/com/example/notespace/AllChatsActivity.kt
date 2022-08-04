@@ -50,30 +50,34 @@ class AllChatsActivity : AppCompatActivity() {
         recyclerView.adapter = allChatAdapter
 
 
-        FirebaseDatabase.getInstance().reference
-            .child("users")
-            .child(FirebaseAuth.getInstance().currentUser!!.uid)
-            .child("chatted_list")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        chattedList.clear()
-                        for (item in snapshot.children) {
-                            val model = item.getValue(AllChatModel::class.java)!!
-                            Log.i("model11", model.toString())
-                            chattedList.add(model)
+        try {
+            FirebaseDatabase.getInstance().reference
+                .child("users")
+                .child(FirebaseAuth.getInstance().currentUser!!.uid)
+                .child("chatted_list")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            arrayListAllChat.clear()
+                            chattedList.clear()
+                            for (item in snapshot.children) {
+                                val model = item.getValue(AllChatModel::class.java)!!
+                                Log.i("model11", model.toString())
+                                chattedList.add(model)
+                            }
+                            Log.i("uyt", chattedList.toString())
+                            arrayListAllChat.addAll(chattedList)
+                            allChatAdapter.notifyDataSetChanged()
                         }
-                        Log.i("uyt", chattedList.toString())
-                        arrayListAllChat.addAll(chattedList)
-                        allChatAdapter.notifyDataSetChanged()
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
+                    override fun onCancelled(error: DatabaseError) {
 
-                }
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
 
     }

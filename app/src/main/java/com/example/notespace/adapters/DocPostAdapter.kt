@@ -57,6 +57,8 @@ class DocPostAdapter(val context: Context, var arrayList: ArrayList<DocPostModel
 
         holder.docName.text = arrayList[holder.adapterPosition].docName
 
+        val ref = FirebaseStorage.getInstance()
+
         holder.itemView.setOnClickListener {
             val pdfPath = arrayList[holder.adapterPosition].docUrl
             val intent = Intent(context, ViewDocumentActivityPost::class.java)
@@ -87,7 +89,7 @@ class DocPostAdapter(val context: Context, var arrayList: ArrayList<DocPostModel
                                                         if (it.isSuccessful) {
 
                                                             try {
-                                                                var reference = FirebaseStorage.getInstance().getReferenceFromUrl(post.docUrl)
+                                                                var reference = ref.getReferenceFromUrl(post.docUrl)
                                                                 reference.delete().addOnSuccessListener {
                                                                     Toast.makeText(context, "Post deleted.", Toast.LENGTH_SHORT).show()
                                                                 }

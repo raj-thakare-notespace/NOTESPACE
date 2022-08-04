@@ -3,7 +3,7 @@ package com.example.notespace
 class Constants {
     companion object {
         const val BASE_URL = "https://fcm.googleapis.com"
-        const val SERVER_KEY = "AAAABfWYkBg:APA91bHHGhUqfCViIUIYtEWdXKjtCz6WijtLc0R23fGqlE5fDGSOB7y1FLdmJeYs8fL3KWrHoP3c0a81nMz8R566QZZeXI_reUuMq72w2aZqI7Rb40gz98jkA_jnDE4Hv2kmHIKvh8VM"
+        const val SERVER_KEY = "AAAAl9MYYvY:APA91bG_Hq5YscyPTYuqf4qt-bs9JarIFBTDb1g3TGJHtM9s-juzykmSOeM1d9BkhXN_t5yWyT3TJEiTT1RioaGak6nA01eOKqCcYZ7Yt5gWpTRDx3vvJBRrYzu7DgO9RZv3gqSNA5_K"
         const val CONTENT_TYPE = "application/json"
     }
 }

@@ -118,26 +118,29 @@ class OtherUsersProfileActivity : AppCompatActivity() {
         var profileImg = intent.getStringExtra("profilePicture")
         var usernameOther = ""
 
-        Firebase.database.reference.child("users")
-            .child(userId.toString()).child("feedbackList")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        arrayListUidFeedbackList.clear()
-                        for (item in snapshot.children) {
-                            arrayListUidFeedbackList.add(item.key.toString())
+        try {
+            Firebase.database.reference.child("users")
+                .child(userId.toString()).child("feedbackList")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            arrayListUidFeedbackList.clear()
+                            for (item in snapshot.children) {
+                                arrayListUidFeedbackList.add(item.key.toString())
+                            }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
 
-        // To get the no of stars for each rank
+        try {// To get the no of stars for each rank
             Firebase.database.reference.child("users")
                 .child(userId.toString())
                 .child("rank")
@@ -252,6 +255,8 @@ class OtherUsersProfileActivity : AppCompatActivity() {
                     }
 
                 })
+        } catch (e: Exception) {
+        }
 
 
 
@@ -286,56 +291,60 @@ class OtherUsersProfileActivity : AppCompatActivity() {
             finish()
         }
 
-        // To check if other user has blocked the current user or not
-        FirebaseDatabase.getInstance().reference.child("users")
-            .child(userId.toString())
-            .child("blocked_users")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        for (item in snapshot.children) {
-                            if (item.key == Firebase.auth.currentUser!!.uid) {
-                                messageButton.setOnClickListener {
-                                    Toast.makeText(
-                                        applicationContext,
-                                        "You can not message this user",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+        try {// To check if other user has blocked the current user or not
+            FirebaseDatabase.getInstance().reference.child("users")
+                .child(userId.toString())
+                .child("blocked_users")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            for (item in snapshot.children) {
+                                if (item.key == Firebase.auth.currentUser!!.uid) {
+                                    messageButton.setOnClickListener {
+                                        Toast.makeText(
+                                            applicationContext,
+                                            "You can not message this user",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                    break
                                 }
-                                break
                             }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
 
-        // To check if current user has blocked the other use or not
-        FirebaseDatabase.getInstance().reference.child("users")
-            .child(Firebase.auth.currentUser!!.uid)
-            .child("blocked_users")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        for (item in snapshot.children) {
-                            if (item.key == userId) {
-                                isBlocked = true
-                                break
+        try {// To check if current user has blocked the other use or not
+            FirebaseDatabase.getInstance().reference.child("users")
+                .child(Firebase.auth.currentUser!!.uid)
+                .child("blocked_users")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            for (item in snapshot.children) {
+                                if (item.key == userId) {
+                                    isBlocked = true
+                                    break
+                                }
                             }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
         toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -549,435 +558,439 @@ class OtherUsersProfileActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please select attributes", Toast.LENGTH_SHORT).show()
             } else {
 
-                if (arrayListUidFeedbackList.contains(Firebase.auth.currentUser!!.uid)) {
-                    var tempRank = ""
-                    var tempStar: Long = 0
-                    Firebase.database.reference.child("users").child(userId.toString())
-                        .child("feedbackList").child(Firebase.auth.currentUser!!.uid)
-                        .addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
+                try {
+                    if (arrayListUidFeedbackList.contains(Firebase.auth.currentUser!!.uid)) {
+                        var tempRank = ""
+                        var tempStar: Long = 0
+                        Firebase.database.reference.child("users").child(userId.toString())
+                            .child("feedbackList").child(Firebase.auth.currentUser!!.uid)
+                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
 
-                                if(snapshot.exists()){
-                                    tempRank = snapshot.child("rankName").value.toString()
-                                    tempStar = snapshot.child("stars").value.toString().toLong()
-
-
-                                    var noOfStars: Long = 0
-
-                                    FirebaseDatabase.getInstance().reference.child("users")
-                                        .child(userId.toString())
-                                        .child("rank")
-                                        .child(tempRank)
-                                        .addListenerForSingleValueEvent(object : ValueEventListener {
-                                            override fun onDataChange(snapshot: DataSnapshot) {
-                                                if(snapshot.exists()){
-                                                    noOfStars = snapshot.value.toString().toLong()
-                                                    FirebaseDatabase.getInstance().reference.child("users")
-                                                        .child(userId.toString())
-                                                        .child("rank")
-                                                        .child(tempRank)
-                                                        .setValue(noOfStars - tempStar)
+                                    if(snapshot.exists()){
+                                        tempRank = snapshot.child("rankName").value.toString()
+                                        tempStar = snapshot.child("stars").value.toString().toLong()
 
 
-                                                    noOfStars -= tempStar
-                                                    when (rankName) {
-                                                        "Helpful" -> {
-                                                            if (tempRank == "Helpful") {
-                                                                Firebase.database.reference.child("users")
-                                                                    .child(userId.toString())
-                                                                    .child("rank")
-                                                                    .child("Helpful")
-                                                                    .setValue(noOfStars + stars)
-                                                                    .addOnCompleteListener {
-                                                                        if (it.isSuccessful) {
-                                                                            Firebase.database.reference.child(
-                                                                                "users"
-                                                                            )
-                                                                                .child(userId.toString())
-                                                                                .child("feedbackList")
-                                                                                .child(Firebase.auth.currentUser!!.uid)
-                                                                                .setValue(
-                                                                                    FeedbackModel(
-                                                                                        Firebase.auth.currentUser!!.uid,
-                                                                                        "Helpful",
-                                                                                        stars
-                                                                                    )
+                                        var noOfStars: Long = 0
+
+                                        FirebaseDatabase.getInstance().reference.child("users")
+                                            .child(userId.toString())
+                                            .child("rank")
+                                            .child(tempRank)
+                                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                                override fun onDataChange(snapshot: DataSnapshot) {
+                                                    if(snapshot.exists()){
+                                                        noOfStars = snapshot.value.toString().toLong()
+                                                        FirebaseDatabase.getInstance().reference.child("users")
+                                                            .child(userId.toString())
+                                                            .child("rank")
+                                                            .child(tempRank)
+                                                            .setValue(noOfStars - tempStar)
+
+
+                                                        noOfStars -= tempStar
+                                                        when (rankName) {
+                                                            "Helpful" -> {
+                                                                if (tempRank == "Helpful") {
+                                                                    Firebase.database.reference.child("users")
+                                                                        .child(userId.toString())
+                                                                        .child("rank")
+                                                                        .child("Helpful")
+                                                                        .setValue(noOfStars + stars)
+                                                                        .addOnCompleteListener {
+                                                                            if (it.isSuccessful) {
+                                                                                Firebase.database.reference.child(
+                                                                                    "users"
                                                                                 )
-                                                                        }
-                                                                    }
-                                                            } else {
-                                                                Firebase.database.reference.child("users")
-                                                                    .child(userId.toString())
-                                                                    .child("rank")
-                                                                    .child("Helpful")
-                                                                    .setValue(starsHelpful + stars)
-                                                                    .addOnCompleteListener {
-                                                                        if (it.isSuccessful) {
-                                                                            Firebase.database.reference.child(
-                                                                                "users"
-                                                                            )
-                                                                                .child(userId.toString())
-                                                                                .child("feedbackList")
-                                                                                .child(Firebase.auth.currentUser!!.uid)
-                                                                                .setValue(
-                                                                                    FeedbackModel(
-                                                                                        Firebase.auth.currentUser!!.uid,
-                                                                                        "Helpful",
-                                                                                        stars
+                                                                                    .child(userId.toString())
+                                                                                    .child("feedbackList")
+                                                                                    .child(Firebase.auth.currentUser!!.uid)
+                                                                                    .setValue(
+                                                                                        FeedbackModel(
+                                                                                            Firebase.auth.currentUser!!.uid,
+                                                                                            "Helpful",
+                                                                                            stars
+                                                                                        )
                                                                                     )
-                                                                                )
+                                                                            }
                                                                         }
-                                                                    }
+                                                                } else {
+                                                                    Firebase.database.reference.child("users")
+                                                                        .child(userId.toString())
+                                                                        .child("rank")
+                                                                        .child("Helpful")
+                                                                        .setValue(starsHelpful + stars)
+                                                                        .addOnCompleteListener {
+                                                                            if (it.isSuccessful) {
+                                                                                Firebase.database.reference.child(
+                                                                                    "users"
+                                                                                )
+                                                                                    .child(userId.toString())
+                                                                                    .child("feedbackList")
+                                                                                    .child(Firebase.auth.currentUser!!.uid)
+                                                                                    .setValue(
+                                                                                        FeedbackModel(
+                                                                                            Firebase.auth.currentUser!!.uid,
+                                                                                            "Helpful",
+                                                                                            stars
+                                                                                        )
+                                                                                    )
+                                                                            }
+                                                                        }
+                                                                }
+
+                                                                true
                                                             }
+                                                            "Resourceful" -> {
+                                                                if (tempRank == "Resourceful") {
+                                                                    Firebase.database.reference.child("users")
+                                                                        .child(userId.toString())
+                                                                        .child("rank")
+                                                                        .child("Resourceful")
+                                                                        .setValue(noOfStars + stars)
+                                                                        .addOnCompleteListener {
+                                                                            if (it.isSuccessful) {
+                                                                                Firebase.database.reference.child(
+                                                                                    "users"
+                                                                                )
+                                                                                    .child(userId.toString())
+                                                                                    .child("feedbackList")
+                                                                                    .child(Firebase.auth.currentUser!!.uid)
+                                                                                    .setValue(
+                                                                                        FeedbackModel(
+                                                                                            Firebase.auth.currentUser!!.uid,
+                                                                                            "Resourceful",
+                                                                                            stars
+                                                                                        )
+                                                                                    )
+                                                                            }
+                                                                        }
+                                                                } else {
+                                                                    Firebase.database.reference.child("users")
+                                                                        .child(userId.toString())
+                                                                        .child("rank")
+                                                                        .child("Resourceful")
+                                                                        .setValue(starsResourceful + stars)
+                                                                        .addOnCompleteListener {
+                                                                            if (it.isSuccessful) {
+                                                                                Firebase.database.reference.child(
+                                                                                    "users"
+                                                                                )
+                                                                                    .child(userId.toString())
+                                                                                    .child("feedbackList")
+                                                                                    .child(Firebase.auth.currentUser!!.uid)
+                                                                                    .setValue(
+                                                                                        FeedbackModel(
+                                                                                            Firebase.auth.currentUser!!.uid,
+                                                                                            "Resourceful",
+                                                                                            stars
+                                                                                        )
+                                                                                    )
+                                                                            }
+                                                                        }
+                                                                }
 
-                                                            true
-                                                        }
-                                                        "Resourceful" -> {
-                                                            if (tempRank == "Resourceful") {
-                                                                Firebase.database.reference.child("users")
-                                                                    .child(userId.toString())
-                                                                    .child("rank")
-                                                                    .child("Resourceful")
-                                                                    .setValue(noOfStars + stars)
-                                                                    .addOnCompleteListener {
-                                                                        if (it.isSuccessful) {
-                                                                            Firebase.database.reference.child(
-                                                                                "users"
-                                                                            )
-                                                                                .child(userId.toString())
-                                                                                .child("feedbackList")
-                                                                                .child(Firebase.auth.currentUser!!.uid)
-                                                                                .setValue(
-                                                                                    FeedbackModel(
-                                                                                        Firebase.auth.currentUser!!.uid,
-                                                                                        "Resourceful",
-                                                                                        stars
-                                                                                    )
-                                                                                )
-                                                                        }
-                                                                    }
-                                                            } else {
-                                                                Firebase.database.reference.child("users")
-                                                                    .child(userId.toString())
-                                                                    .child("rank")
-                                                                    .child("Resourceful")
-                                                                    .setValue(starsResourceful + stars)
-                                                                    .addOnCompleteListener {
-                                                                        if (it.isSuccessful) {
-                                                                            Firebase.database.reference.child(
-                                                                                "users"
-                                                                            )
-                                                                                .child(userId.toString())
-                                                                                .child("feedbackList")
-                                                                                .child(Firebase.auth.currentUser!!.uid)
-                                                                                .setValue(
-                                                                                    FeedbackModel(
-                                                                                        Firebase.auth.currentUser!!.uid,
-                                                                                        "Resourceful",
-                                                                                        stars
-                                                                                    )
-                                                                                )
-                                                                        }
-                                                                    }
+                                                                true
                                                             }
+                                                            "Genius" -> {
+                                                                if (tempRank == "Genius") {
+                                                                    Firebase.database.reference.child("users")
+                                                                        .child(userId.toString())
+                                                                        .child("rank")
+                                                                        .child("Genius")
+                                                                        .setValue(noOfStars + stars)
+                                                                        .addOnCompleteListener {
+                                                                            if (it.isSuccessful) {
+                                                                                Firebase.database.reference.child(
+                                                                                    "users"
+                                                                                )
+                                                                                    .child(userId.toString())
+                                                                                    .child("feedbackList")
+                                                                                    .child(Firebase.auth.currentUser!!.uid)
+                                                                                    .setValue(
+                                                                                        FeedbackModel(
+                                                                                            Firebase.auth.currentUser!!.uid,
+                                                                                            "Genius",
+                                                                                            stars
+                                                                                        )
+                                                                                    )
+                                                                            }
+                                                                        }
+                                                                } else {
+                                                                    Firebase.database.reference.child("users")
+                                                                        .child(userId.toString())
+                                                                        .child("rank")
+                                                                        .child("Genius")
+                                                                        .setValue(starsGenius + stars)
+                                                                        .addOnCompleteListener {
+                                                                            if (it.isSuccessful) {
+                                                                                Firebase.database.reference.child(
+                                                                                    "users"
+                                                                                )
+                                                                                    .child(userId.toString())
+                                                                                    .child("feedbackList")
+                                                                                    .child(Firebase.auth.currentUser!!.uid)
+                                                                                    .setValue(
+                                                                                        FeedbackModel(
+                                                                                            Firebase.auth.currentUser!!.uid,
+                                                                                            "Genius",
+                                                                                            stars
+                                                                                        )
+                                                                                    )
+                                                                            }
+                                                                        }
+                                                                }
 
-                                                            true
-                                                        }
-                                                        "Genius" -> {
-                                                            if (tempRank == "Genius") {
-                                                                Firebase.database.reference.child("users")
-                                                                    .child(userId.toString())
-                                                                    .child("rank")
-                                                                    .child("Genius")
-                                                                    .setValue(noOfStars + stars)
-                                                                    .addOnCompleteListener {
-                                                                        if (it.isSuccessful) {
-                                                                            Firebase.database.reference.child(
-                                                                                "users"
-                                                                            )
-                                                                                .child(userId.toString())
-                                                                                .child("feedbackList")
-                                                                                .child(Firebase.auth.currentUser!!.uid)
-                                                                                .setValue(
-                                                                                    FeedbackModel(
-                                                                                        Firebase.auth.currentUser!!.uid,
-                                                                                        "Genius",
-                                                                                        stars
-                                                                                    )
-                                                                                )
-                                                                        }
-                                                                    }
-                                                            } else {
-                                                                Firebase.database.reference.child("users")
-                                                                    .child(userId.toString())
-                                                                    .child("rank")
-                                                                    .child("Genius")
-                                                                    .setValue(starsGenius + stars)
-                                                                    .addOnCompleteListener {
-                                                                        if (it.isSuccessful) {
-                                                                            Firebase.database.reference.child(
-                                                                                "users"
-                                                                            )
-                                                                                .child(userId.toString())
-                                                                                .child("feedbackList")
-                                                                                .child(Firebase.auth.currentUser!!.uid)
-                                                                                .setValue(
-                                                                                    FeedbackModel(
-                                                                                        Firebase.auth.currentUser!!.uid,
-                                                                                        "Genius",
-                                                                                        stars
-                                                                                    )
-                                                                                )
-                                                                        }
-                                                                    }
+                                                                true
                                                             }
+                                                            "Reliable" -> {
+                                                                if (tempRank == "Reliable") {
+                                                                    Firebase.database.reference.child("users")
+                                                                        .child(userId.toString())
+                                                                        .child("rank")
+                                                                        .child("Reliable")
+                                                                        .setValue(noOfStars + stars)
+                                                                        .addOnCompleteListener {
+                                                                            if (it.isSuccessful) {
+                                                                                Firebase.database.reference.child(
+                                                                                    "users"
+                                                                                )
+                                                                                    .child(userId.toString())
+                                                                                    .child("feedbackList")
+                                                                                    .child(Firebase.auth.currentUser!!.uid)
+                                                                                    .setValue(
+                                                                                        FeedbackModel(
+                                                                                            Firebase.auth.currentUser!!.uid,
+                                                                                            "Reliable",
+                                                                                            stars
+                                                                                        )
+                                                                                    )
+                                                                            }
+                                                                        }
+                                                                } else {
+                                                                    Firebase.database.reference.child("users")
+                                                                        .child(userId.toString())
+                                                                        .child("rank")
+                                                                        .child("Reliable")
+                                                                        .setValue(starsReliable + stars)
+                                                                        .addOnCompleteListener {
+                                                                            if (it.isSuccessful) {
+                                                                                Firebase.database.reference.child(
+                                                                                    "users"
+                                                                                )
+                                                                                    .child(userId.toString())
+                                                                                    .child("feedbackList")
+                                                                                    .child(Firebase.auth.currentUser!!.uid)
+                                                                                    .setValue(
+                                                                                        FeedbackModel(
+                                                                                            Firebase.auth.currentUser!!.uid,
+                                                                                            "Reliable",
+                                                                                            stars
+                                                                                        )
+                                                                                    )
+                                                                            }
+                                                                        }
+                                                                }
 
-                                                            true
-                                                        }
-                                                        "Reliable" -> {
-                                                            if (tempRank == "Reliable") {
-                                                                Firebase.database.reference.child("users")
-                                                                    .child(userId.toString())
-                                                                    .child("rank")
-                                                                    .child("Reliable")
-                                                                    .setValue(noOfStars + stars)
-                                                                    .addOnCompleteListener {
-                                                                        if (it.isSuccessful) {
-                                                                            Firebase.database.reference.child(
-                                                                                "users"
-                                                                            )
-                                                                                .child(userId.toString())
-                                                                                .child("feedbackList")
-                                                                                .child(Firebase.auth.currentUser!!.uid)
-                                                                                .setValue(
-                                                                                    FeedbackModel(
-                                                                                        Firebase.auth.currentUser!!.uid,
-                                                                                        "Reliable",
-                                                                                        stars
-                                                                                    )
-                                                                                )
-                                                                        }
-                                                                    }
-                                                            } else {
-                                                                Firebase.database.reference.child("users")
-                                                                    .child(userId.toString())
-                                                                    .child("rank")
-                                                                    .child("Reliable")
-                                                                    .setValue(starsReliable + stars)
-                                                                    .addOnCompleteListener {
-                                                                        if (it.isSuccessful) {
-                                                                            Firebase.database.reference.child(
-                                                                                "users"
-                                                                            )
-                                                                                .child(userId.toString())
-                                                                                .child("feedbackList")
-                                                                                .child(Firebase.auth.currentUser!!.uid)
-                                                                                .setValue(
-                                                                                    FeedbackModel(
-                                                                                        Firebase.auth.currentUser!!.uid,
-                                                                                        "Reliable",
-                                                                                        stars
-                                                                                    )
-                                                                                )
-                                                                        }
-                                                                    }
+                                                                true
                                                             }
+                                                            "Problem Solver" -> {
+                                                                if (tempRank == "Problem Solver") {
+                                                                    Firebase.database.reference.child("users")
+                                                                        .child(userId.toString())
+                                                                        .child("rank")
+                                                                        .child("Problem Solver")
+                                                                        .setValue(noOfStars + stars)
+                                                                        .addOnCompleteListener {
+                                                                            if (it.isSuccessful) {
+                                                                                Firebase.database.reference.child(
+                                                                                    "users"
+                                                                                )
+                                                                                    .child(userId.toString())
+                                                                                    .child("feedbackList")
+                                                                                    .child(Firebase.auth.currentUser!!.uid)
+                                                                                    .setValue(
+                                                                                        FeedbackModel(
+                                                                                            Firebase.auth.currentUser!!.uid,
+                                                                                            "Problem Solver",
+                                                                                            stars
+                                                                                        )
+                                                                                    )
+                                                                            }
+                                                                        }
+                                                                } else {
+                                                                    Firebase.database.reference.child("users")
+                                                                        .child(userId.toString())
+                                                                        .child("rank")
+                                                                        .child("Problem Solver")
+                                                                        .setValue(starsProblemSolver + stars)
+                                                                        .addOnCompleteListener {
+                                                                            if (it.isSuccessful) {
+                                                                                Firebase.database.reference.child(
+                                                                                    "users"
+                                                                                )
+                                                                                    .child(userId.toString())
+                                                                                    .child("feedbackList")
+                                                                                    .child(Firebase.auth.currentUser!!.uid)
+                                                                                    .setValue(
+                                                                                        FeedbackModel(
+                                                                                            Firebase.auth.currentUser!!.uid,
+                                                                                            "Problem Solver",
+                                                                                            stars
+                                                                                        )
+                                                                                    )
+                                                                            }
+                                                                        }
+                                                                }
 
-                                                            true
-                                                        }
-                                                        "Problem Solver" -> {
-                                                            if (tempRank == "Problem Solver") {
-                                                                Firebase.database.reference.child("users")
-                                                                    .child(userId.toString())
-                                                                    .child("rank")
-                                                                    .child("Problem Solver")
-                                                                    .setValue(noOfStars + stars)
-                                                                    .addOnCompleteListener {
-                                                                        if (it.isSuccessful) {
-                                                                            Firebase.database.reference.child(
-                                                                                "users"
-                                                                            )
-                                                                                .child(userId.toString())
-                                                                                .child("feedbackList")
-                                                                                .child(Firebase.auth.currentUser!!.uid)
-                                                                                .setValue(
-                                                                                    FeedbackModel(
-                                                                                        Firebase.auth.currentUser!!.uid,
-                                                                                        "Problem Solver",
-                                                                                        stars
-                                                                                    )
-                                                                                )
-                                                                        }
-                                                                    }
-                                                            } else {
-                                                                Firebase.database.reference.child("users")
-                                                                    .child(userId.toString())
-                                                                    .child("rank")
-                                                                    .child("Problem Solver")
-                                                                    .setValue(starsProblemSolver + stars)
-                                                                    .addOnCompleteListener {
-                                                                        if (it.isSuccessful) {
-                                                                            Firebase.database.reference.child(
-                                                                                "users"
-                                                                            )
-                                                                                .child(userId.toString())
-                                                                                .child("feedbackList")
-                                                                                .child(Firebase.auth.currentUser!!.uid)
-                                                                                .setValue(
-                                                                                    FeedbackModel(
-                                                                                        Firebase.auth.currentUser!!.uid,
-                                                                                        "Problem Solver",
-                                                                                        stars
-                                                                                    )
-                                                                                )
-                                                                        }
-                                                                    }
+                                                                true
                                                             }
-
-                                                            true
+                                                            else -> false
                                                         }
-                                                        else -> false
                                                     }
+
+
                                                 }
 
+                                                override fun onCancelled(error: DatabaseError) {
+                                                    TODO("Not yet implemented")
+                                                }
 
-                                            }
-
-                                            override fun onCancelled(error: DatabaseError) {
-                                                TODO("Not yet implemented")
-                                            }
-
-                                        })
-                                }
-
-                            }
-
-
-                            override fun onCancelled(error: DatabaseError) {
-                                TODO("Not yet implemented")
-                            }
-
-                        })
-
-
-
-                    Toast.makeText(this, "Rank Edited", Toast.LENGTH_SHORT).show()
-
-                } else {
-                    when (rankName) {
-                        "Helpful" -> {
-                            Firebase.database.reference.child("users")
-                                .child(userId.toString())
-                                .child("rank")
-                                .child("Helpful")
-                                .setValue(starsHelpful + stars).addOnCompleteListener {
-                                    if (it.isSuccessful) {
-                                        Firebase.database.reference.child("users")
-                                            .child(userId.toString())
-                                            .child("feedbackList")
-                                            .child(Firebase.auth.currentUser!!.uid)
-                                            .setValue(
-                                                FeedbackModel(
-                                                    Firebase.auth.currentUser!!.uid,
-                                                    "Helpful",
-                                                    stars
-                                                )
-                                            )
+                                            })
                                     }
+
                                 }
-                            true
-                        }
-                        "Resourceful" -> {
-                            Firebase.database.reference.child("users")
-                                .child(userId.toString())
-                                .child("rank")
-                                .child("Resourceful")
-                                .setValue(starsResourceful + stars).addOnCompleteListener {
-                                    if (it.isSuccessful) {
-                                        Firebase.database.reference.child("users")
-                                            .child(userId.toString())
-                                            .child("feedbackList")
-                                            .child(Firebase.auth.currentUser!!.uid)
-                                            .setValue(
-                                                FeedbackModel(
-                                                    Firebase.auth.currentUser!!.uid,
-                                                    "Resourceful",
-                                                    stars
-                                                )
-                                            )
-                                    }
+
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    TODO("Not yet implemented")
                                 }
-                            true
-                        }
-                        "Genius" -> {
-                            Firebase.database.reference.child("users")
-                                .child(userId.toString())
-                                .child("rank")
-                                .child("Genius")
-                                .setValue(starsGenius + stars).addOnCompleteListener {
-                                    if (it.isSuccessful) {
-                                        Firebase.database.reference.child("users")
-                                            .child(userId.toString())
-                                            .child("feedbackList")
-                                            .child(Firebase.auth.currentUser!!.uid)
-                                            .setValue(
-                                                FeedbackModel(
-                                                    Firebase.auth.currentUser!!.uid,
-                                                    "Genius",
-                                                    stars
-                                                )
-                                            )
-                                    }
-                                }
-                            true
-                        }
-                        "Reliable" -> {
-                            Firebase.database.reference.child("users")
-                                .child(userId.toString())
-                                .child("rank")
-                                .child("Reliable")
-                                .setValue(starsReliable + stars).addOnCompleteListener {
-                                    if (it.isSuccessful) {
-                                        Firebase.database.reference.child("users")
-                                            .child(userId.toString())
-                                            .child("feedbackList")
-                                            .child(Firebase.auth.currentUser!!.uid)
-                                            .setValue(
-                                                FeedbackModel(
-                                                    Firebase.auth.currentUser!!.uid,
-                                                    "Reliable",
-                                                    stars
-                                                )
-                                            )
-                                    }
-                                }
-                            true
-                        }
-                        "Problem Solver" -> {
-                            Firebase.database.reference.child("users")
-                                .child(userId.toString())
-                                .child("rank")
-                                .child("Problem Solver")
-                                .setValue(starsProblemSolver + stars).addOnCompleteListener {
-                                    if (it.isSuccessful) {
-                                        Firebase.database.reference.child("users")
-                                            .child(userId.toString())
-                                            .child("feedbackList")
-                                            .child(Firebase.auth.currentUser!!.uid)
-                                            .setValue(
-                                                FeedbackModel(
-                                                    Firebase.auth.currentUser!!.uid,
-                                                    "Problem Solver",
-                                                    stars
-                                                )
-                                            )
-                                    }
-                                }
-                            true
-                        }
-                        else -> false
+
+                            })
+
+
+
+                        Toast.makeText(this, "Rank Edited", Toast.LENGTH_SHORT).show()
+
                     }
-                    Toast.makeText(this, "Rank Submitted", Toast.LENGTH_SHORT).show()
+                    else {
+                        when (rankName) {
+                            "Helpful" -> {
+                                Firebase.database.reference.child("users")
+                                    .child(userId.toString())
+                                    .child("rank")
+                                    .child("Helpful")
+                                    .setValue(starsHelpful + stars).addOnCompleteListener {
+                                        if (it.isSuccessful) {
+                                            Firebase.database.reference.child("users")
+                                                .child(userId.toString())
+                                                .child("feedbackList")
+                                                .child(Firebase.auth.currentUser!!.uid)
+                                                .setValue(
+                                                    FeedbackModel(
+                                                        Firebase.auth.currentUser!!.uid,
+                                                        "Helpful",
+                                                        stars
+                                                    )
+                                                )
+                                        }
+                                    }
+                                true
+                            }
+                            "Resourceful" -> {
+                                Firebase.database.reference.child("users")
+                                    .child(userId.toString())
+                                    .child("rank")
+                                    .child("Resourceful")
+                                    .setValue(starsResourceful + stars).addOnCompleteListener {
+                                        if (it.isSuccessful) {
+                                            Firebase.database.reference.child("users")
+                                                .child(userId.toString())
+                                                .child("feedbackList")
+                                                .child(Firebase.auth.currentUser!!.uid)
+                                                .setValue(
+                                                    FeedbackModel(
+                                                        Firebase.auth.currentUser!!.uid,
+                                                        "Resourceful",
+                                                        stars
+                                                    )
+                                                )
+                                        }
+                                    }
+                                true
+                            }
+                            "Genius" -> {
+                                Firebase.database.reference.child("users")
+                                    .child(userId.toString())
+                                    .child("rank")
+                                    .child("Genius")
+                                    .setValue(starsGenius + stars).addOnCompleteListener {
+                                        if (it.isSuccessful) {
+                                            Firebase.database.reference.child("users")
+                                                .child(userId.toString())
+                                                .child("feedbackList")
+                                                .child(Firebase.auth.currentUser!!.uid)
+                                                .setValue(
+                                                    FeedbackModel(
+                                                        Firebase.auth.currentUser!!.uid,
+                                                        "Genius",
+                                                        stars
+                                                    )
+                                                )
+                                        }
+                                    }
+                                true
+                            }
+                            "Reliable" -> {
+                                Firebase.database.reference.child("users")
+                                    .child(userId.toString())
+                                    .child("rank")
+                                    .child("Reliable")
+                                    .setValue(starsReliable + stars).addOnCompleteListener {
+                                        if (it.isSuccessful) {
+                                            Firebase.database.reference.child("users")
+                                                .child(userId.toString())
+                                                .child("feedbackList")
+                                                .child(Firebase.auth.currentUser!!.uid)
+                                                .setValue(
+                                                    FeedbackModel(
+                                                        Firebase.auth.currentUser!!.uid,
+                                                        "Reliable",
+                                                        stars
+                                                    )
+                                                )
+                                        }
+                                    }
+                                true
+                            }
+                            "Problem Solver" -> {
+                                Firebase.database.reference.child("users")
+                                    .child(userId.toString())
+                                    .child("rank")
+                                    .child("Problem Solver")
+                                    .setValue(starsProblemSolver + stars).addOnCompleteListener {
+                                        if (it.isSuccessful) {
+                                            Firebase.database.reference.child("users")
+                                                .child(userId.toString())
+                                                .child("feedbackList")
+                                                .child(Firebase.auth.currentUser!!.uid)
+                                                .setValue(
+                                                    FeedbackModel(
+                                                        Firebase.auth.currentUser!!.uid,
+                                                        "Problem Solver",
+                                                        stars
+                                                    )
+                                                )
+                                        }
+                                    }
+                                true
+                            }
+                            else -> false
+                        }
+                        Toast.makeText(this, "Rank Submitted", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
                 }
 
             }
@@ -991,79 +1004,90 @@ class OtherUsersProfileActivity : AppCompatActivity() {
         dialog = builder.create()
 
 
-        FirebaseDatabase.getInstance().reference.child("users")
-            .child(userId.toString())
-            .child("followers")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    for (item in snapshot.children) {
-                        followersArrayList.add(item.key.toString())
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
-
-
-
-        FirebaseDatabase.getInstance().reference.child("users")
-            .child(userId.toString())
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        val model = snapshot.getValue(User::class.java)
-                        isAccountPrivate = model!!.accountPrivate
-
-                        Log.i("followers", followersArrayList.toString())
-
-                        if (isAccountPrivate && !followersArrayList.contains(Firebase.auth.currentUser!!.uid)) {
-                            noOfFollowers.isEnabled = false
-                            noOfFollowing.isEnabled = false
-                            documentPostButton.visibility = View.GONE
-                            libraryButton.visibility = View.GONE
-                            notesButton.visibility = View.GONE
-                            profilePostRV.visibility = View.GONE
-                        }
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
-
-
-
-
-
-
-        FirebaseDatabase.getInstance().reference.child("users")
-            .child(Firebase.auth.currentUser!!.uid)
-            .child("following")
-            .addValueEventListener(object : ValueEventListener {
-                @SuppressLint("ResourceAsColor")
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        for (item in snapshot.children) {
-                            if (item.key == userId) {
-                                followButton.backgroundTintList = ContextCompat.getColorStateList(applicationContext,R.color.light_blue)
-                                followButton.setText("Following")
-                                isFollowing = true
-                                break
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .child(userId.toString())
+                .child("followers")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            for (item in snapshot.children) {
+                                followersArrayList.add(item.key.toString())
                             }
                         }
                     }
 
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                })
+        } catch (e: Exception) {
+        }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
 
-            })
+
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .child(userId.toString())
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            val model = snapshot.getValue(User::class.java)
+                            isAccountPrivate = model!!.accountPrivate
+
+                            Log.i("followers", followersArrayList.toString())
+
+                            if (isAccountPrivate && !followersArrayList.contains(Firebase.auth.currentUser!!.uid)) {
+                                noOfFollowers.isEnabled = false
+                                noOfFollowing.isEnabled = false
+                                documentPostButton.visibility = View.GONE
+                                libraryButton.visibility = View.GONE
+                                notesButton.visibility = View.GONE
+                                profilePostRV.visibility = View.GONE
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+        } catch (e: Exception) {
+        }
+
+
+
+
+
+
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .child(Firebase.auth.currentUser!!.uid)
+                .child("following")
+                .addValueEventListener(object : ValueEventListener {
+                    @SuppressLint("ResourceAsColor")
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            for (item in snapshot.children) {
+                                if (item.key == userId) {
+                                    followButton.backgroundTintList = ContextCompat.getColorStateList(applicationContext,R.color.light_blue)
+                                    followButton.setText("Following")
+                                    isFollowing = true
+                                    break
+                                }
+                            }
+                        }
+
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+        } catch (e: Exception) {
+        }
 
         libraryButton.setOnClickListener {
             val intent = Intent(this, LibraryActivity::class.java)
@@ -1074,49 +1098,55 @@ class OtherUsersProfileActivity : AppCompatActivity() {
 
         var receiverModel = AllChatModel()
 
-        FirebaseDatabase.getInstance().reference.child("users")
-            .child(userId.toString())
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        val model = snapshot.getValue(AllChatModel::class.java)!!
-                        receiverModel.uid = model.uid
-                        receiverModel.displayName = model.displayName
-                        receiverModel.profilePicture = model.profilePicture
-                        receiverModel.username = model.username
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .child(userId.toString())
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            val model = snapshot.getValue(AllChatModel::class.java)!!
+                            receiverModel.uid = model.uid
+                            receiverModel.displayName = model.displayName
+                            receiverModel.profilePicture = model.profilePicture
+                            receiverModel.username = model.username
+                        }
+
                     }
 
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
+                })
+        } catch (e: Exception) {
+        }
 
         var currentUserModel = AllChatModel()
 
-        FirebaseDatabase.getInstance().reference.child("users")
-            .child(FirebaseAuth.getInstance().currentUser!!.uid)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        val model = snapshot.getValue(AllChatModel::class.java)!!
-                        currentUserModel.uid = model.uid
-                        currentUserModel.displayName = model.displayName
-                        currentUserModel.profilePicture = model.profilePicture
-                        currentUserModel.username = model.username
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .child(FirebaseAuth.getInstance().currentUser!!.uid)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            val model = snapshot.getValue(AllChatModel::class.java)!!
+                            currentUserModel.uid = model.uid
+                            currentUserModel.displayName = model.displayName
+                            currentUserModel.profilePicture = model.profilePicture
+                            currentUserModel.username = model.username
 
-                        //building a request model from firebase to add to request list of other user
-                        requestModel = snapshot.getValue(RequestModel::class.java)!!
+                            //building a request model from firebase to add to request list of other user
+                            requestModel = snapshot.getValue(RequestModel::class.java)!!
+                        }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
 
 
@@ -1145,18 +1175,21 @@ class OtherUsersProfileActivity : AppCompatActivity() {
                                             .addListenerForSingleValueEvent(object : ValueEventListener{
                                                 override fun onDataChange(snapshot: DataSnapshot) {
                                                     if(snapshot.exists()){
-                                                        TOKEN = snapshot.value.toString()
-                                                        PushNotification(
-                                                            NotificationData(
-                                                                "${currentUserModel.username} started following you",
-                                                                "click here to see"
-                                                            ),
-                                                            TOKEN
-                                                        ).also {
-                                                            try {
-                                                                sendNotification(it)
-                                                            } catch (e: Exception) {
+                                                        try {
+                                                            TOKEN = snapshot.value.toString()
+                                                            PushNotification(
+                                                                NotificationData(
+                                                                    "${currentUserModel.username} started following you",
+                                                                    "click here to see"
+                                                                ),
+                                                                TOKEN
+                                                            ).also {
+                                                                try {
+                                                                    sendNotification(it)
+                                                                } catch (e: Exception) {
+                                                                }
                                                             }
+                                                        } catch (e: Exception) {
                                                         }
                                                     }
 
@@ -1267,77 +1300,82 @@ class OtherUsersProfileActivity : AppCompatActivity() {
         }
 
 
-        // To get post on profile
-        Firebase.database.reference.child("users")
-            .child(userId.toString()).child("my_posts")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        postArrayList.clear()
-                        for (item in snapshot.children) {
-                            val post = item.getValue(Post::class.java)!!
-                            postArrayList.add(post.postImage)
+        try {// To get post on profile
+            Firebase.database.reference.child("users")
+                .child(userId.toString()).child("my_posts")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            postArrayList.clear()
+                            for (item in snapshot.children) {
+                                val post = item.getValue(Post::class.java)!!
+                                postArrayList.add(post.postImage)
 
+                            }
+                            postAdapter.notifyDataSetChanged()
                         }
-                        postAdapter.notifyDataSetChanged()
+
                     }
 
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
-
-
-        FirebaseDatabase.getInstance().reference.child("users").child(userId!!)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        Log.i("ddd", snapshot.toString())
-                        usernameOther = snapshot.child("username").value.toString()
-                        val usernameL = snapshot.child("username").value
-                        val displayNameL = snapshot.child("displayName").value
-                        val bioL = snapshot.child("bio").value
-                        val professionL = snapshot.child("profession").value
-                        val profilePictureL = snapshot.child("profilePicture").value
-                        val followersCount = snapshot.child("followers").childrenCount
-                        val followingCount = snapshot.child("following").childrenCount
-                        val postCount = snapshot.child("my_posts").childrenCount
-
-                        toolbar.title = usernameL.toString()
-                        username.text = usernameL.toString()
-                        displayName.text = displayNameL.toString()
-                        if(bioL.toString().isNotEmpty()){
-                            bio.visibility = View.VISIBLE
-                        }
-                        if(professionL.toString().isNotEmpty()){
-                            profession.visibility = View.VISIBLE
-                        }
-                        bio.text = bioL.toString()
-                        profession.text = professionL.toString()
-                        Glide.with(applicationContext)
-                            .load(profilePictureL.toString())
-                            .placeholder(R.drawable.profile_placeholder)
-                            .into(profilePictureIV)
-
-
-                        var noOfPostInK = GetStatsInKandM().getStats(postCount)
-                        var noOfFollowerInK = GetStatsInKandM().getStats(followersCount)
-                        var noOfFollowingInK = GetStatsInKandM().getStats(followingCount)
-
-                        noOfPosts.text = noOfPostInK
-                        noOfFollowers.text = noOfFollowerInK
-                        noOfFollowing.text = noOfFollowingInK
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                })
+        } catch (e: Exception) {
+        }
 
-            })
+
+        try {
+            FirebaseDatabase.getInstance().reference.child("users").child(userId!!)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            Log.i("ddd", snapshot.toString())
+                            usernameOther = snapshot.child("username").value.toString()
+                            val usernameL = snapshot.child("username").value
+                            val displayNameL = snapshot.child("displayName").value
+                            val bioL = snapshot.child("bio").value
+                            val professionL = snapshot.child("profession").value
+                            val profilePictureL = snapshot.child("profilePicture").value
+                            val followersCount = snapshot.child("followers").childrenCount
+                            val followingCount = snapshot.child("following").childrenCount
+                            val postCount = snapshot.child("my_posts").childrenCount
+
+                            toolbar.title = usernameL.toString()
+                            username.text = usernameL.toString()
+                            displayName.text = displayNameL.toString()
+                            if(bioL.toString().isNotEmpty()){
+                                bio.visibility = View.VISIBLE
+                            }
+                            if(professionL.toString().isNotEmpty()){
+                                profession.visibility = View.VISIBLE
+                            }
+                            bio.text = bioL.toString()
+                            profession.text = professionL.toString()
+                            Glide.with(applicationContext)
+                                .load(profilePictureL.toString())
+                                .placeholder(R.drawable.profile_placeholder)
+                                .into(profilePictureIV)
+
+
+                            var noOfPostInK = GetStatsInKandM().getStats(postCount)
+                            var noOfFollowerInK = GetStatsInKandM().getStats(followersCount)
+                            var noOfFollowingInK = GetStatsInKandM().getStats(followingCount)
+
+                            noOfPosts.text = noOfPostInK
+                            noOfFollowers.text = noOfFollowerInK
+                            noOfFollowing.text = noOfFollowingInK
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+        } catch (e: Exception) {
+        }
     }
 
     private fun sendNotification(notification: PushNotification) =
@@ -1349,47 +1387,51 @@ class OtherUsersProfileActivity : AppCompatActivity() {
             }
         }
 
-    fun refreshProfile(userId: String) {
-        FirebaseDatabase.getInstance().reference.child("users").child(userId!!)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        Log.i("ddd", snapshot.toString())
-                        val usernameL = snapshot.child("username").value
-                        val displayNameL = snapshot.child("displayName").value
-                        val bioL = snapshot.child("bio").value
-                        val professionL = snapshot.child("profession").value
-                        val profilePictureL = snapshot.child("profilePicture").value
-                        val followersCount = snapshot.child("followers").childrenCount
-                        val followingCount = snapshot.child("following").childrenCount
-                        val postCount = snapshot.child("my_posts").childrenCount
+    private fun refreshProfile(userId: String) {
 
-                        if(bioL.toString().isNotEmpty()){
-                            bio.visibility = View.VISIBLE
-                        }
-                        if(professionL.toString().isNotEmpty()){
-                            profession.visibility = View.VISIBLE
-                        }
+        try {
+            FirebaseDatabase.getInstance().reference.child("users").child(userId!!)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            Log.i("ddd", snapshot.toString())
+                            val usernameL = snapshot.child("username").value
+                            val displayNameL = snapshot.child("displayName").value
+                            val bioL = snapshot.child("bio").value
+                            val professionL = snapshot.child("profession").value
+                            val profilePictureL = snapshot.child("profilePicture").value
+                            val followersCount = snapshot.child("followers").childrenCount
+                            val followingCount = snapshot.child("following").childrenCount
+                            val postCount = snapshot.child("my_posts").childrenCount
 
-                        toolbar.title = usernameL.toString()
-                        username.text = usernameL.toString()
-                        displayName.text = displayNameL.toString()
-                        bio.text = bioL.toString()
-                        profession.text = professionL.toString()
-                        Glide.with(applicationContext)
-                            .load(profilePictureL.toString())
-                            .placeholder(R.drawable.profile_placeholder)
-                            .into(profilePictureIV)
-                        noOfFollowers.text = followersCount.toString()
-                        noOfFollowing.text = followingCount.toString()
-                        noOfPosts.text = postCount.toString()
+                            if(bioL.toString().isNotEmpty()){
+                                bio.visibility = View.VISIBLE
+                            }
+                            if(professionL.toString().isNotEmpty()){
+                                profession.visibility = View.VISIBLE
+                            }
+
+                            toolbar.title = usernameL.toString()
+                            username.text = usernameL.toString()
+                            displayName.text = displayNameL.toString()
+                            bio.text = bioL.toString()
+                            profession.text = professionL.toString()
+                            Glide.with(applicationContext)
+                                .load(profilePictureL.toString())
+                                .placeholder(R.drawable.profile_placeholder)
+                                .into(profilePictureIV)
+                            noOfFollowers.text = followersCount.toString()
+                            noOfFollowing.text = followingCount.toString()
+                            noOfPosts.text = postCount.toString()
+                        }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
     }
 }

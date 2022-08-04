@@ -39,27 +39,32 @@ class NoteDetailActivity : AppCompatActivity() {
             finish()
         }
 
-        FirebaseDatabase.getInstance().reference.child("notes")
-            .child(userId.toString())
-            .child(title.toString())
-            .addValueEventListener(object : ValueEventListener{
-                @SuppressLint("Range")
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val model = snapshot.getValue(NoteModel::class.java)
-                    Glide.with(applicationContext)
-                        .load(model!!.image)
-                        .into(imageView)
-                    noteTitle.setText(model.title)
-                    noteDescription.setText(model.description)
-                    relativeLayout.setBackgroundColor(android.graphics.Color.parseColor(model.color))
-                }
+        try {
+            FirebaseDatabase.getInstance().reference.child("notes")
+                .child(userId.toString())
+                .child(title.toString())
+                .addValueEventListener(object : ValueEventListener{
+                    @SuppressLint("Range")
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            val model = snapshot.getValue(NoteModel::class.java)
+                            Glide.with(applicationContext)
+                                .load(model!!.image)
+                                .into(imageView)
+                            noteTitle.setText(model.title)
+                            noteDescription.setText(model.description)
+                            relativeLayout.setBackgroundColor(android.graphics.Color.parseColor(model.color))
+                        }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    }
 
-            })
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
+                })
+        } catch (e: Exception) {
+        }
 
 
     }

@@ -33,6 +33,13 @@ class LibraryActivity : AppCompatActivity() {
 
     lateinit var searchView: SearchView
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Library1().finish()
+        Library2().finish()
+        Library3().finish()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_library)
@@ -41,6 +48,9 @@ class LibraryActivity : AppCompatActivity() {
 
         toolbar.setNavigationOnClickListener {
             finish()
+            Library1().finish()
+            Library2().finish()
+            Library3().finish()
         }
 
         fileNotFoundIV = findViewById(R.id.fileNotFoundIV)
@@ -71,27 +81,30 @@ class LibraryActivity : AppCompatActivity() {
 
         Log.i("userIddd",uid.toString())
 
-        FirebaseDatabase.getInstance().reference.child("Library")
-            .child(uid!!.toString())
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        arrayList.clear()
-                        for (item in snapshot.children) {
-                            var folderName = item.key
-                            Log.i("android", folderName.toString())
-                            arrayList.add(MyLibraryModel(uid.toString(),folderName.toString()))
-                            libraryAdapter.notifyDataSetChanged()
+        try {
+            FirebaseDatabase.getInstance().reference.child("Library")
+                .child(uid!!.toString())
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            arrayList.clear()
+                            for (item in snapshot.children) {
+                                var folderName = item.key
+                                Log.i("android", folderName.toString())
+                                arrayList.add(MyLibraryModel(uid.toString(),folderName.toString()))
+                                libraryAdapter.notifyDataSetChanged()
+                            }
                         }
+
                     }
 
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
+                })
+        } catch (e: Exception) {
+        }
 
 
     }

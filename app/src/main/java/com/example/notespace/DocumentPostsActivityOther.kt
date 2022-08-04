@@ -56,26 +56,29 @@ class DocumentPostsActivityOther : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        FirebaseDatabase.getInstance().reference.child("users")
-            .child(uid)
-            .child("my_document_posts")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()){
-                        arrayList.clear()
-                        for(item in snapshot.children){
-                            val model = item.getValue(DocPostModel::class.java)
-                            arrayList.add(model!!)
-                            adapter.notifyDataSetChanged()
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .child(uid)
+                .child("my_document_posts")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()){
+                            arrayList.clear()
+                            for(item in snapshot.children){
+                                val model = item.getValue(DocPostModel::class.java)
+                                arrayList.add(model!!)
+                                adapter.notifyDataSetChanged()
+                            }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
     }
 
     private fun filterList(text: String?) {

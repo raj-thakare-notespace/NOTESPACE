@@ -74,22 +74,25 @@ class GroupLibrary : AppCompatActivity() {
         val createdBy = intent.getStringExtra("createdBy")
 
         // To get names of the folders from the database
-        FirebaseDatabase.getInstance().reference.child("Library")
-            .child(uid!!.toString()).addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        folderNameList.clear()
-                        for(item in snapshot.children){
-                            folderNameList.add(item.key.toString())
+        try {
+            FirebaseDatabase.getInstance().reference.child("Library")
+                .child(uid!!.toString()).addValueEventListener(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            folderNameList.clear()
+                            for(item in snapshot.children){
+                                folderNameList.add(item.key.toString())
+                            }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
         addFolderButton = findViewById(R.id.addFolderButtonGP)
         foldersRV = findViewById(R.id.foldersRVGP)
@@ -152,25 +155,28 @@ class GroupLibrary : AppCompatActivity() {
         foldersRV.layoutManager = LinearLayoutManager(view.context)
         foldersRV.adapter = libraryAdapter
 
-        FirebaseDatabase.getInstance().reference.child("Library")
-            .child(uid!!)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        arrayList.clear()
-                        for (item in snapshot.children) {
-                            var folderName = item.key
-                            arrayList.add(MyLibraryModel(uid,folderName!!))
-                            libraryAdapter.notifyDataSetChanged()
+        try {
+            FirebaseDatabase.getInstance().reference.child("Library")
+                .child(uid!!)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            arrayList.clear()
+                            for (item in snapshot.children) {
+                                var folderName = item.key
+                                arrayList.add(MyLibraryModel(uid,folderName!!))
+                                libraryAdapter.notifyDataSetChanged()
+                            }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
         addFolderButton.setOnClickListener {
             dialog.show()

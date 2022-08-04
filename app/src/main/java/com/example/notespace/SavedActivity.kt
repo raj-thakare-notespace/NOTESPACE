@@ -46,28 +46,31 @@ class SavedActivity : AppCompatActivity() {
 
         recyclerView.adapter = adapter
 
-        database.reference.child("users")
-            .child(auth.currentUser!!.uid)
-            .child("saved")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        postList.clear()
-                        for (dataSnapshot in snapshot.children) {
-                            val post = dataSnapshot.getValue(Post::class.java)
-                            post!!.postId = dataSnapshot.key.toString()
-                            postList.add(post)
-                            Log.i("postrrr", post.toString())
+        try {
+            database.reference.child("users")
+                .child(auth.currentUser!!.uid)
+                .child("saved")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            postList.clear()
+                            for (dataSnapshot in snapshot.children) {
+                                val post = dataSnapshot.getValue(Post::class.java)
+                                post!!.postId = dataSnapshot.key.toString()
+                                postList.add(post)
+                                Log.i("postrrr", post.toString())
+                            }
+                            adapter.notifyDataSetChanged()
                         }
-                        adapter.notifyDataSetChanged()
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
+                    override fun onCancelled(error: DatabaseError) {
 
-                }
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
 
     }

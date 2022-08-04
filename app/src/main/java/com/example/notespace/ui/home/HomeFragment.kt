@@ -2,6 +2,7 @@ package com.example.notespace.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,9 +62,6 @@ class HomeFragment : Fragment() {
 
     var postList = ArrayList<Post>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     private fun checkFollow() {
 
@@ -149,6 +147,7 @@ class HomeFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        getPosts()
         adapter.notifyDataSetChanged()
     }
 

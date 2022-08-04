@@ -49,28 +49,31 @@ class FollowingListActivityOther : AppCompatActivity() {
 
         var follwersUids : ArrayList<String> = ArrayList()
 
-        FirebaseDatabase.getInstance().reference.child("users")
-            .child(userId.toString())
-            .child("following")
-            .addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        arrayListAllFollowers.clear()
-                        for(item in snapshot.children){
-                            val model = item.getValue(AllChatModel::class.java)!!
-                            arrayListAllFollowers.add(model)
-                            Log.i("ghfi",model.toString())
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .child(userId.toString())
+                .child("following")
+                .addValueEventListener(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            arrayListAllFollowers.clear()
+                            for(item in snapshot.children){
+                                val model = item.getValue(AllChatModel::class.java)!!
+                                arrayListAllFollowers.add(model)
+                                Log.i("ghfi",model.toString())
+                            }
+                            allChatAdapter.notifyDataSetChanged()
                         }
-                        allChatAdapter.notifyDataSetChanged()
+
                     }
 
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
+                })
+        } catch (e: Exception) {
+        }
 
 
     }

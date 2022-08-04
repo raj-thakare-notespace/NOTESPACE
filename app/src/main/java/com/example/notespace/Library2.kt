@@ -38,6 +38,11 @@ class Library2 : AppCompatActivity() {
 
     lateinit var fileNotFoundIV: ImageView
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Library3().finish()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_library_2)
@@ -70,6 +75,7 @@ class Library2 : AppCompatActivity() {
 
         toolBarLibraryDetail.setNavigationOnClickListener {
             finish()
+            Library3().finish()
         }
 
 
@@ -86,39 +92,42 @@ class Library2 : AppCompatActivity() {
         Log.i("keyNvalue", userId)
 
 
-        FirebaseDatabase.getInstance().reference.child("Library")
-            .child(userId!!)
-            .child(folderName1)
-            .child(folderName2)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    arrayListDoc.clear()
-                    for (item in snapshot.children) {
-                        var name = item.key
-                        var uri = item.value
+        try {
+            FirebaseDatabase.getInstance().reference.child("Library")
+                .child(userId!!)
+                .child(folderName1)
+                .child(folderName2)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        arrayListDoc.clear()
+                        for (item in snapshot.children) {
+                            var name = item.key
+                            var uri = item.value
 
-                        var count = 0
-                        for (i in item.children) {
-                            Log.i("abcdefgh", i.value.toString())
-                            count++
-                        }
+                            var count = 0
+                            for (i in item.children) {
+                                Log.i("abcdefgh", i.value.toString())
+                                count++
+                            }
 
-                        if (count > 0 || item.value.toString() == "folderTrue") {
+                            if (count > 0 || item.value.toString() == "folderTrue") {
 
-                            arrayListDoc.add(MyLibrary2Model(userId,"","",folderName1,folderName2,item.key.toString()))
-                            docAdapter.notifyDataSetChanged()
-                        } else {
-                            arrayListDoc.add(MyLibrary2Model(userId,item.key.toString(),item.value.toString(),folderName1,folderName2,""))
-                            docAdapter.notifyDataSetChanged()
+                                arrayListDoc.add(MyLibrary2Model(userId,"","",folderName1,folderName2,item.key.toString()))
+                                docAdapter.notifyDataSetChanged()
+                            } else {
+                                arrayListDoc.add(MyLibrary2Model(userId,item.key.toString(),item.value.toString(),folderName1,folderName2,""))
+                                docAdapter.notifyDataSetChanged()
+                            }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
     }
 

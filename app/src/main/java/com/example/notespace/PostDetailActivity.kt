@@ -46,12 +46,16 @@ class PostDetailActivity : AppCompatActivity() {
         toolbar.setOnMenuItemClickListener {
             when(it.itemId){
                 R.id.downloadPost -> {
-                    Toast.makeText(this,"Downloading...",Toast.LENGTH_SHORT).show()
-                    if(isPermissionGranted(this)){
-                        downloadFile(postUri.toString())
-                    }
-                    else{
-                        takePermission(this)
+
+                    try {
+                        Toast.makeText(this,"Downloading...",Toast.LENGTH_SHORT).show()
+                        if(isPermissionGranted(this)){
+                            downloadFile(postUri.toString())
+                        }
+                        else{
+                            takePermission(this)
+                        }
+                    } catch (e: Exception) {
                     }
                     true
                 }

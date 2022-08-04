@@ -143,6 +143,12 @@ class ProfileActivity : AppCompatActivity() {
             view.findViewById<MaterialButton>(R.id.accountPrivateAlertDialog)
         val signOutBtnAlertDialogBtn = view.findViewById<MaterialButton>(R.id.signOutBtnAlertDialog)
         val aboutUsButton = view.findViewById<MaterialButton>(R.id.aboutUsAlertDialog)
+        val privacyPolicyAlertDialog = view.findViewById<MaterialButton>(R.id.privacyPolicyAlertDialog)
+
+        privacyPolicyAlertDialog.setOnClickListener {
+            startActivity(Intent(this,PrivacyPolicyActivity::class.java))
+            dialog.dismiss()
+        }
 
         aboutUsButton.setOnClickListener {
             startActivity(Intent(this,AboutUsActivity::class.java))
@@ -152,32 +158,57 @@ class ProfileActivity : AppCompatActivity() {
 
 
         deleteAccountButton.setOnClickListener {
-            dialog.dismiss()
-            startActivity(Intent(this,DeleteAccountActivity::class.java))
+
+            try {
+                FirebaseDatabase.getInstance().reference.child("users")
+                    .child(Firebase.auth.currentUser!!.uid)
+                    .addListenerForSingleValueEvent(object : ValueEventListener{
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            if(snapshot.exists()){
+                                val user = snapshot.getValue(User::class.java)!!
+                                val intent = Intent(applicationContext,DeleteAccountActivity::class.java)
+                                intent.putExtra("email",user.email)
+                                intent.putExtra("password",user.password)
+                                startActivity(intent)
+                                dialog.dismiss()
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            TODO("Not yet implemented")
+                        }
+
+                    })
+            } catch (e: Exception) {
+            }
 
         }
 
         accountPrivateAlertDialogBtn.setOnClickListener {
-            if (isAccountPrivate) {
-                database.reference.child("users")
-                    .child(Firebase.auth.currentUser!!.uid)
-                    .child("accountPrivate")
-                    .setValue(false)
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            accountPrivateAlertDialogBtn.text = "Account Public"
+            try {
+                if (isAccountPrivate) {
+                    database.reference.child("users")
+                        .child(Firebase.auth.currentUser!!.uid)
+                        .child("accountPrivate")
+                        .setValue(false)
+                        .addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                accountPrivateAlertDialogBtn.text = "Account Public"
+                            }
                         }
-                    }
-            } else {
-                database.reference.child("users")
-                    .child(Firebase.auth.currentUser!!.uid)
-                    .child("accountPrivate")
-                    .setValue(true)
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            accountPrivateAlertDialogBtn.text = "Account Private"
+                }
+                else {
+                    database.reference.child("users")
+                        .child(Firebase.auth.currentUser!!.uid)
+                        .child("accountPrivate")
+                        .setValue(true)
+                        .addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                accountPrivateAlertDialogBtn.text = "Account Private"
+                            }
                         }
-                    }
+                }
+            } catch (e: Exception) {
             }
         }
 
@@ -326,28 +357,31 @@ class ProfileActivity : AppCompatActivity() {
         }
 
 
-        database.reference.child("users")
-            .child(Firebase.auth.currentUser!!.uid)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        val model = snapshot.getValue(User::class.java)
-                        Log.i("JSR", model.toString())
-                        if (model!!.accountPrivate) {
-                            accountPrivateAlertDialogBtn.setText("Account Private")
-                            isAccountPrivate = true
-                        } else {
-                            accountPrivateAlertDialogBtn.setText("Account Public")
-                            isAccountPrivate = false
+        try {
+            database.reference.child("users")
+                .child(Firebase.auth.currentUser!!.uid)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            val model = snapshot.getValue(User::class.java)
+                            Log.i("JSR", model.toString())
+                            if (model!!.accountPrivate) {
+                                accountPrivateAlertDialogBtn.setText("Account Private")
+                                isAccountPrivate = true
+                            } else {
+                                accountPrivateAlertDialogBtn.setText("Account Public")
+                                isAccountPrivate = false
+                            }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
 
 
@@ -403,31 +437,34 @@ class ProfileActivity : AppCompatActivity() {
 
         }
 
-        database.reference.child("users")
-            .child(Firebase.auth.currentUser!!.uid)
-            .child("my_posts")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        postArrayList.clear()
-                        for (item in snapshot.children) {
-                            val post = item.getValue(Post::class.java)
-                            val postedBy = post!!.postedBy
-                            if (postedBy == Firebase.auth.currentUser!!.uid) {
-                                postArrayList.add(post)
+        try {
+            database.reference.child("users")
+                .child(Firebase.auth.currentUser!!.uid)
+                .child("my_posts")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            postArrayList.clear()
+                            for (item in snapshot.children) {
+                                val post = item.getValue(Post::class.java)
+                                val postedBy = post!!.postedBy
+                                if (postedBy == Firebase.auth.currentUser!!.uid) {
+                                    postArrayList.add(post)
 
+                                }
                             }
+                            postAdapter.notifyDataSetChanged()
                         }
-                        postAdapter.notifyDataSetChanged()
+
                     }
 
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
+                })
+        } catch (e: Exception) {
+        }
 
         try {
             database.reference.child("users").child(Firebase.auth.currentUser!!.uid)

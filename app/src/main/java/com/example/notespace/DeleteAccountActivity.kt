@@ -1,13 +1,15 @@
 package com.example.notespace
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -17,14 +19,41 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 
+
 class DeleteAccountActivity : AppCompatActivity() {
 
     lateinit var deleteButton : MaterialButton
     lateinit var toolbar: MaterialToolbar
 
+    private fun deleteUser(email: String, password: String) {
+        val user = FirebaseAuth.getInstance().currentUser
+
+        // Get auth credentials from the user for re-authentication. The example below shows
+        // email and password credentials but there are multiple possible providers,
+        // such as GoogleAuthProvider or FacebookAuthProvider.
+        val credential = EmailAuthProvider.getCredential(email, password)
+
+        // Prompt the user to re-provide their sign-in credentials
+        user?.reauthenticate(credential)?.addOnCompleteListener {
+            user.delete()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        startActivity(Intent(this, SignInActivity::class.java))
+                        Toast.makeText(this, "Account Deleted Permanently.", Toast.LENGTH_LONG).show()
+                        MainActivity().finish()
+                        ProfileActivity().finish()
+                        finish()
+                    }
+                }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_delete_account)
+
+        val email = intent.getStringExtra("email").toString()
+        val password = intent.getStringExtra("password").toString()
 
         toolbar = findViewById(R.id.deleteAccountToolBar)
 
@@ -111,27 +140,39 @@ class DeleteAccountActivity : AppCompatActivity() {
                                 FirebaseDatabase.getInstance().reference.child("Library")
                                     .child(Firebase.auth.currentUser!!.uid)
                                     .removeValue().addOnSuccessListener {
+
+
                                         try {
-                                            for (item in uidArrayList) {
-                                                val ref = reference.getReferenceFromUrl(item)
-                                                ref.delete()
+                                            if(uidArrayList.isNotEmpty()){
+                                                for (item in uidArrayList) {
+                                                    try {
+                                                        val ref = reference.getReferenceFromUrl(item)
+                                                        ref.delete()
+                                                    } catch (e: Exception) {
+                                                    }
+                                                }
                                             }
+
                                             Firebase.database.reference.child("libraryOfPdfUrls")
                                                 .child(Firebase.auth.currentUser!!.uid)
                                                 .removeValue()
+
                                         } catch (e: Exception) {
                                         }
 
 
                                         try {
-                                            Firebase.auth.currentUser!!.delete()
-                                                .addOnSuccessListener {
-                                                    Toast.makeText(this, "Account Deleted Permanently", Toast.LENGTH_SHORT).show()
-                                                    startActivity(Intent(this, SignInActivity::class.java))
-                                                    MainActivity().finish()
-                                                    ProfileActivity().finish()
-                                                    finish()
-                                                }
+//                                            Firebase.auth.currentUser!!.delete()
+//                                                .addOnSuccessListener {
+//                                                    Toast.makeText(this, "Account Deleted Permanently", Toast.LENGTH_SHORT).show()
+//                                                    startActivity(Intent(this, SignInActivity::class.java))
+//                                                    MainActivity().finish()
+//                                                    ProfileActivity().finish()
+//                                                    finish()
+//                                                }
+
+                                            deleteUser(email,password)
+
 
 
                                         }

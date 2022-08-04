@@ -17,6 +17,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
@@ -54,6 +58,44 @@ class MainActivity : AppCompatActivity() {
 
         navView.setupWithNavController(navController)
 
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            for(item in snapshot.children){
+                                FirebaseDatabase.getInstance().reference.child("users")
+                                    .child(item.key.toString()).child("username")
+                                    .addListenerForSingleValueEvent(object : ValueEventListener{
+                                        override fun onDataChange(snapshot: DataSnapshot) {
+                                            try {
+                                                if(!snapshot.exists() || snapshot.value.toString().isEmpty()){
+                                                    FirebaseDatabase.getInstance().reference.child("users")
+                                                        .child(item.key.toString()).removeValue()
+                                                }
+                                            } catch (e: Exception) {
+                                            }
+
+                                        }
+
+                                        override fun onCancelled(error: DatabaseError) {
+                                            TODO("Not yet implemented")
+                                        }
+
+                                    })
+                            }
+                        }
+
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+        } catch (e: Exception) {
+        }
+
     }
 
     override fun onRequestPermissionsResult(
@@ -63,16 +105,19 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if(requestCode == 101){
-            if(grantResults.isNotEmpty()){
-                var readExternalStorage : Boolean = grantResults[0] == PackageManager.PERMISSION_GRANTED
-                if(readExternalStorage){
-                    Toast.makeText(this,"Read permission granted in android 10 or below", Toast.LENGTH_SHORT).show()
-                }
-                else{
-                    takePermission(this)
+        try {
+            if(requestCode == 101){
+                if(grantResults.isNotEmpty()){
+                    var readExternalStorage : Boolean = grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    if(readExternalStorage){
+                        Toast.makeText(this,"Read permission granted in android 10 or below", Toast.LENGTH_SHORT).show()
+                    }
+                    else{
+                        takePermission(this)
+                    }
                 }
             }
+        } catch (e: Exception) {
         }
 
     }
@@ -117,18 +162,21 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // To manage permissions
-        if(requestCode == RESULT_OK){
-            if(requestCode == 100){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    // For android 11
-                    if(Environment.isExternalStorageManager()){
-                        Toast.makeText(this,"Permission Granted in android 11",Toast.LENGTH_SHORT).show()
-                    }
-                    else{
-                        takePermission(this)
+        try {
+            if(requestCode == RESULT_OK){
+                if(requestCode == 100){
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        // For android 11
+                        if(Environment.isExternalStorageManager()){
+                            Toast.makeText(this,"Permission Granted in android 11",Toast.LENGTH_SHORT).show()
+                        }
+                        else{
+                            takePermission(this)
+                        }
                     }
                 }
             }
+        } catch (e: Exception) {
         }
     }
 

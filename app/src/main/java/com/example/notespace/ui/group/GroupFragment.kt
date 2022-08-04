@@ -54,23 +54,27 @@ class GroupFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        FirebaseDatabase.getInstance().reference.child("users")
-            .child(FirebaseAuth.getInstance().currentUser!!.uid)
-            .child("my_groups").addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(!snapshot.exists()){
-                        groupNotFoundRL.visibility = View.VISIBLE
+        groupAdapter.notifyDataSetChanged()
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .child(FirebaseAuth.getInstance().currentUser!!.uid)
+                .child("my_groups").addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(!snapshot.exists()){
+                            groupNotFoundRL.visibility = View.VISIBLE
+                        }
+                        else {
+                            groupNotFoundRL.visibility = View.GONE
+                        }
                     }
-                    else {
-                        groupNotFoundRL.visibility = View.GONE
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
+                })
+        } catch (e: Exception) {
+        }
     }
 
 
@@ -103,12 +107,32 @@ class GroupFragment : Fragment() {
 
         })
 
+        try {
+            FirebaseDatabase.getInstance().reference.child("users")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            arrayListOfUid.clear()
+                            for (item in snapshot.children) {
+                                arrayListOfUid.add(item.key.toString())
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+        } catch (e: Exception) {
+        }
+
         // ALERT DIALOG TO CREATE GROUP
         val builder = MaterialAlertDialogBuilder(view.context)
         builder.setTitle("Create group")
 
         var view = layoutInflater.inflate(R.layout.create_group_dialog, null)
-        val groupUsername = view.findViewById<EditText>(R.id.groupUsername)
+        val groupUsernameEditText = view.findViewById<EditText>(R.id.groupUsername)
         val groupDisplayName = view.findViewById<EditText>(R.id.groupDisplayName)
         val groupJoinCode = view.findViewById<EditText>(R.id.groupJoinCode)
         val okButton = view.findViewById<Button>(R.id.okButtonGroup)
@@ -128,35 +152,38 @@ class GroupFragment : Fragment() {
                             for (dataSnapshot in snapshot.children) {
                                 val group = dataSnapshot.getValue(Group::class.java)
                                 val groupUid = group!!.uid
-                                FirebaseDatabase.getInstance().reference.child("users")
-                                    .child(groupUid)
-                                    .addValueEventListener(object : ValueEventListener {
-                                        override fun onDataChange(snapshot: DataSnapshot) {
-                                            if (snapshot.exists()) {
-                                                val model = snapshot.getValue(Group::class.java)
-                                                arrayList.add(model!!)
-                                                Log.i("tiger", model.toString())
-                                                groupAdapter.notifyDataSetChanged()
-                                                if (arrayList.isNotEmpty()) {
-                                                    searchView.clearFocus()
-                                                    groupNotFoundRL.visibility = View.GONE
-                                                    groupRecyclerView.visibility = View.VISIBLE
+                                try {
+                                    FirebaseDatabase.getInstance().reference.child("users")
+                                        .child(groupUid)
+                                        .addValueEventListener(object : ValueEventListener {
+                                            override fun onDataChange(snapshot: DataSnapshot) {
+                                                if (snapshot.exists()) {
+                                                    val model = snapshot.getValue(Group::class.java)
+                                                    arrayList.add(model!!)
+                                                    groupAdapter.notifyDataSetChanged()
+                                                    Log.i("tiger", model.toString())
+                                                    if (arrayList.isNotEmpty()) {
+                                                        searchView.clearFocus()
+                                                        groupNotFoundRL.visibility = View.GONE
+                                                        groupRecyclerView.visibility = View.VISIBLE
+                                                    }
+                                                } else {
+                                                    FirebaseDatabase.getInstance().reference.child("users")
+                                                        .child(FirebaseAuth.getInstance().currentUser!!.uid)
+                                                        .child("my_groups").child(groupUid)
+                                                        .removeValue()
                                                 }
-                                            } else {
-                                                FirebaseDatabase.getInstance().reference.child("users")
-                                                    .child(FirebaseAuth.getInstance().currentUser!!.uid)
-                                                    .child("my_groups").child(groupUid)
-                                                    .removeValue()
                                             }
-                                        }
+                                            override fun onCancelled(error: DatabaseError) {
+                                                TODO("Not yet implemented")
+                                            }
 
-                                        override fun onCancelled(error: DatabaseError) {
-                                            TODO("Not yet implemented")
-                                        }
-
-                                    })
+                                        })
+                                } catch (e: Exception) {
+                                }
 
                             }
+
                         }
                     }
 
@@ -165,29 +192,11 @@ class GroupFragment : Fragment() {
                     }
 
                 })
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
         }
 
         uniqueGroupId = RandomCodeGenerator().generateAlphaNumeric(10)
-
-        try {
-            FirebaseDatabase.getInstance().reference.child("users")
-                .addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            for (item in snapshot.children) {
-                                arrayListOfUid.add(item.key.toString())
-                            }
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
-                    }
-
-                })
-        } catch (e: Exception) {
-        }
 
         groupToolbar.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -212,23 +221,23 @@ class GroupFragment : Fragment() {
                                                 }
                                                 for (item in snapshot.children) {
                                                     val username = item.child("username").value
-                                                    if (username == groupUsername.text.toString()) {
+                                                    if (username == groupUsernameEditText.text.toString()) {
                                                         ans = true
                                                         break
                                                     }
                                                 }
                                                 if (ans) {
-                                                    groupUsername.error = "Username already exists"
-                                                } else if (groupUsername.text.toString()
+                                                    groupUsernameEditText.error = "Username already exists"
+                                                } else if (groupUsernameEditText.text.toString()
                                                         .contains(" ")
                                                 ) {
-                                                    groupUsername.error =
+                                                    groupUsernameEditText.error =
                                                         "Empty spaces not allowed."
                                                 } else if (groupJoinCode.text.toString().length <= 7) {
                                                     groupJoinCode.error =
                                                         "Minimum 8 characters long."
                                                 } else {
-                                                    if (groupUsername.text.isNotEmpty() && groupDisplayName.text.isNotEmpty() && groupJoinCode.text.isNotEmpty() && !arrayListOfUid.contains(
+                                                    if (groupUsernameEditText.text.isNotEmpty() && groupDisplayName.text.isNotEmpty() && groupJoinCode.text.isNotEmpty() && !arrayListOfUid.contains(
                                                             uniqueGroupId
                                                         )
                                                     ) {
@@ -238,7 +247,7 @@ class GroupFragment : Fragment() {
                                                         group.createdBy =
                                                             FirebaseAuth.getInstance().currentUser!!.uid
                                                         group.username =
-                                                            groupUsername.text.toString()
+                                                            groupUsernameEditText.text.toString()
                                                         group.uid = uniqueGroupId
                                                         group.displayName =
                                                             groupDisplayName.text.toString()
@@ -246,7 +255,7 @@ class GroupFragment : Fragment() {
                                                             groupJoinCode.text.toString()
 
                                                         val groupUsername =
-                                                            groupUsername.text.toString()
+                                                            groupUsernameEditText.text.toString()
 
                                                         try {
                                                             FirebaseDatabase.getInstance().reference.child(
@@ -271,9 +280,7 @@ class GroupFragment : Fragment() {
                                                         lateinit var currentUserModel: AllChatModel
 
                                                         try {
-                                                            FirebaseDatabase.getInstance().reference.child(
-                                                                "users"
-                                                            )
+                                                            FirebaseDatabase.getInstance().reference.child("users")
                                                                 .child(FirebaseAuth.getInstance().currentUser!!.uid)
                                                                 .addValueEventListener(object :
                                                                     ValueEventListener {
@@ -312,11 +319,11 @@ class GroupFragment : Fragment() {
                                                                         .setValue(currentUserModel)
                                                                         .addOnCompleteListener {
                                                                             if (it.isSuccessful) {
-                                                                                Toast.makeText(
-                                                                                    view.context,
-                                                                                    "Group Created Successfully.",
-                                                                                    Toast.LENGTH_SHORT
-                                                                                ).show()
+                                                                                groupDisplayName.text.clear()
+                                                                                groupJoinCode.text.clear()
+                                                                                groupUsernameEditText.text.clear()
+                                                                                Toast.makeText(view.context, "Group Created Successfully.", Toast.LENGTH_SHORT).show()
+                                                                                groupAdapter.notifyDataSetChanged()
                                                                             }
                                                                         }
 

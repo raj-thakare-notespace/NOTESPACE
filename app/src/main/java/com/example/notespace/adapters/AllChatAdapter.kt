@@ -116,7 +116,7 @@ class AllChatAdapter(val context: Context, val arrayList: ArrayList<AllChatModel
                             .removeValue().addOnSuccessListener {
                                 Toast.makeText(context, "deleted successfully.", Toast.LENGTH_SHORT)
                                     .show()
-                                notifyDataSetChanged()
+
                             }
                     } catch (e: Exception) {
                     }
@@ -127,6 +127,7 @@ class AllChatAdapter(val context: Context, val arrayList: ArrayList<AllChatModel
                 }
             val alert = builder.create()
             alert.show()
+            notifyDataSetChanged()
         }
 
 

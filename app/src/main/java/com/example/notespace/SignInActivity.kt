@@ -81,33 +81,37 @@ class SignInActivity : AppCompatActivity() {
                 passwordTextLayoutSignIn.error = "Password can not be empty"
             }
             else{
-                progressDialog.show()
-                progressDialog.setContentView(R.layout.progress_bar)
-                progressDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-                auth.signInWithEmailAndPassword(
-                    emailEditText.text.toString(),
-                    passwordEditText.text.toString()
-                ).addOnCompleteListener(this) {
-                    if (it.isSuccessful) {
-                        FirebaseService.sharedPref = getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
-                        FirebaseMessaging.getInstance().token.addOnCompleteListener {
-                            if (it.isSuccessful) {
-                                FirebaseService.token = it.result
-                                FirebaseDatabase.getInstance().reference.child("users")
-                                    .child(Firebase.auth.currentUser!!.uid)
-                                    .child("token")
-                                    .setValue(it.result)
+                try {
+                    progressDialog.show()
+                    progressDialog.setContentView(R.layout.progress_bar)
+                    progressDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
+                    auth.signInWithEmailAndPassword(
+                        emailEditText.text.toString(),
+                        passwordEditText.text.toString()
+                    ).addOnCompleteListener(this) {
+                        if (it.isSuccessful) {
+                            FirebaseService.sharedPref = getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+                            FirebaseMessaging.getInstance().token.addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    FirebaseService.token = it.result
+                                    FirebaseDatabase.getInstance().reference.child("users")
+                                        .child(Firebase.auth.currentUser!!.uid)
+                                        .child("token")
+                                        .setValue(it.result)
+
+                                }
                             }
+                            progressDialog.dismiss()
+                            Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this, MainActivity::class.java))
+                        } else {
+                            progressDialog.dismiss()
+                            Toast.makeText(this, "Login Unsuccessful", Toast.LENGTH_SHORT).show()
                         }
-                        progressDialog.dismiss()
-                        Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this, MainActivity::class.java))
-                    } else {
-                        progressDialog.dismiss()
-                        Toast.makeText(this, "Login Unsuccessful", Toast.LENGTH_SHORT).show()
                     }
+                } catch (e: Exception) {
                 }
             }
         }

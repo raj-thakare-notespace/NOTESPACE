@@ -3,6 +3,7 @@ package com.example.notespace
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
@@ -88,46 +89,49 @@ class SignUpActivity : AppCompatActivity() {
             else {
 
 
-                FirebaseDatabase.getInstance().reference.child("users")
-                    .addValueEventListener(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
+                try {
+                    FirebaseDatabase.getInstance().reference.child("users")
+                        .addValueEventListener(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
 
-                            if(snapshot.exists()){
-                                var ans = false
+                                if(snapshot.exists()){
+                                    var ans = false
 
-                                for (item in snapshot.children) {
-                                    val username = item.child("username").value
-                                    if (username == usernameEditText.text.toString().toLowerCase()) {
-                                        ans = true
-                                        break
+                                    for (item in snapshot.children) {
+                                        val username = item.child("username").value
+                                        if (username == usernameEditText.text.toString().toLowerCase()) {
+                                            ans = true
+                                            break
+                                        }
                                     }
-                                }
-                                if (ans) {
-//                            usernameEditText.error = "Username already exists"
-                                    usernameTextLayoutSignUp.error = "Username already exists"
-                                } else {
-                                    if (usernameEditText.text.isNotEmpty() && emailEditText.text.isNotEmpty() && passwordEditText.text.isNotEmpty()) {
-                                        signUp()
+                                    if (ans) {
+    //                            usernameEditText.error = "Username already exists"
+                                        usernameTextLayoutSignUp.error = "Username already exists"
                                     } else {
-                                        Toast.makeText(
-                                            applicationContext,
-                                            "Enter all fields properly",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        if (usernameEditText.text.isNotEmpty() && emailEditText.text.isNotEmpty() && passwordEditText.text.isNotEmpty()) {
+                                            signUp()
+                                        } else {
+                                            Toast.makeText(
+                                                applicationContext,
+                                                "Enter all fields properly",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
                                     }
                                 }
+                                else {
+                                    signUp()
+                                }
+
                             }
-                            else {
-                                signUp()
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Log.i("error",error.toString())
                             }
 
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            TODO("Not yet implemented")
-                        }
-
-                    })
+                        })
+                } catch (e: Exception) {
+                }
             }
 
         }

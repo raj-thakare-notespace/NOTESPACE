@@ -70,6 +70,11 @@ class MyLibrary2 : AppCompatActivity() {
 
     private var folderNameList : ArrayList<String> = ArrayList()
 
+    override fun onDestroy() {
+        super.onDestroy()
+        MyLibrary3().finish()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_library_2)
@@ -86,6 +91,7 @@ class MyLibrary2 : AppCompatActivity() {
 
         folderDetailToolbar.setNavigationOnClickListener {
             finish()
+            MyLibrary3().finish()
         }
 
         folderDetailToolbar.setOnMenuItemClickListener {
@@ -103,23 +109,25 @@ class MyLibrary2 : AppCompatActivity() {
 
         searchView = findViewById(R.id.searchViewLibraryFolderDetailSecond2)
 
-        // To get names of the folders from the database
-        FirebaseDatabase.getInstance().reference.child("Library").child(uid).child(folderName1)
-            .child(folderName2).addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        folderNameList.clear()
-                        for(item in snapshot.children){
-                            folderNameList.add(item.key.toString())
+        try {// To get names of the folders from the database
+            FirebaseDatabase.getInstance().reference.child("Library").child(uid).child(folderName1)
+                .child(folderName2).addValueEventListener(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            folderNameList.clear()
+                            for(item in snapshot.children){
+                                folderNameList.add(item.key.toString())
+                            }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
         val builder = MaterialAlertDialogBuilder(this)
         builder.setTitle("Create folder")
@@ -206,41 +214,44 @@ class MyLibrary2 : AppCompatActivity() {
         recyclerView.adapter = myLibraryAdapter
 
 
-        FirebaseDatabase.getInstance().reference.child("Library")
-            .child(uid)
-            .child(folderName1)
-            .child(folderName2)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        arrayListDoc.clear()
-                        for (item in snapshot.children) {
-                            var name = item.key
-                            var uri = item.value
-                            var count=0
-                            for(i in item.children){
-                                Log.i("abcdefgh",i.value.toString())
-                                count++
-                            }
-                            if(count > 0 || item.value.toString() == "folderTrue"){
-                                arrayListDoc.add(MyLibrary2Model(uid, "", "", folderName1, folderName2, item.key.toString()))
-                                myLibraryAdapter.notifyDataSetChanged()
-                            }
-                            else{
-                                arrayListDoc.add(MyLibrary2Model(uid, item.key.toString(), item.value.toString(), folderName1, folderName2, ""))
-                                myLibraryAdapter.notifyDataSetChanged()
-                            }
+        try {
+            FirebaseDatabase.getInstance().reference.child("Library")
+                .child(uid)
+                .child(folderName1)
+                .child(folderName2)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            arrayListDoc.clear()
+                            for (item in snapshot.children) {
+                                var name = item.key
+                                var uri = item.value
+                                var count=0
+                                for(i in item.children){
+                                    Log.i("abcdefgh",i.value.toString())
+                                    count++
+                                }
+                                if(count > 0 || item.value.toString() == "folderTrue"){
+                                    arrayListDoc.add(MyLibrary2Model(uid, "", "", folderName1, folderName2, item.key.toString()))
+                                    myLibraryAdapter.notifyDataSetChanged()
+                                }
+                                else{
+                                    arrayListDoc.add(MyLibrary2Model(uid, item.key.toString(), item.value.toString(), folderName1, folderName2, ""))
+                                    myLibraryAdapter.notifyDataSetChanged()
+                                }
 
+                            }
                         }
+
                     }
 
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
-            })
+                })
+        } catch (e: Exception) {
+        }
 
 
         addDocButton.setOnClickListener {

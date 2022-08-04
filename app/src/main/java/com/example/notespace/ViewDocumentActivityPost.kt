@@ -158,26 +158,31 @@ class ViewDocumentActivityPost : AppCompatActivity() {
         toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.download_post_view_doc -> {
-                    val builder = MaterialAlertDialogBuilder(this)
-                    builder.setTitle("Do you want to download this file?")
-                    builder.setCancelable(false)
-                        .setPositiveButton("Yes") { dialog, id ->
 
-                            Toast.makeText(this,"Downloading...",Toast.LENGTH_SHORT).show()
+                    try {
+                        val builder = MaterialAlertDialogBuilder(this)
+                        builder.setTitle("Do you want to download this file?")
+                        builder.setCancelable(false)
+                            .setPositiveButton("Yes") { dialog, id ->
 
-                            if(isPermissionGranted(this)){
-                                downloadFilePdf(pdfUrl.toString(),pdfName.toString())
+                                Toast.makeText(this,"Downloading...",Toast.LENGTH_SHORT).show()
+
+                                if(isPermissionGranted(this)){
+                                    downloadFilePdf(pdfUrl.toString(),pdfName.toString())
+                                }
+                                else{
+                                    takePermission(this)
+                                }
+
                             }
-                            else{
-                                takePermission(this)
+                            .setNegativeButton("No") { dialog, id ->
+                                dialog.dismiss()
                             }
+                        val alert = builder.create()
+                        alert.show()
+                    } catch (e: Exception) {
+                    }
 
-                        }
-                        .setNegativeButton("No") { dialog, id ->
-                            dialog.dismiss()
-                        }
-                    val alert = builder.create()
-                    alert.show()
                     true
                 }
                 else -> false

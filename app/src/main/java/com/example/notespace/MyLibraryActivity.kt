@@ -47,6 +47,13 @@ class MyLibraryActivity : AppCompatActivity() {
     private lateinit var fileNotFoundIV : ImageView
 
 
+    override fun onDestroy() {
+        super.onDestroy()
+        MyLibrary1().finish()
+        MyLibrary2().finish()
+        MyLibrary3().finish()
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +64,9 @@ class MyLibraryActivity : AppCompatActivity() {
 
         toolbar.setNavigationOnClickListener {
             finish()
+            MyLibrary1().finish()
+            MyLibrary2().finish()
+            MyLibrary3().finish()
         }
 
         val uid = Firebase.auth.currentUser!!.uid.toString()
@@ -80,22 +90,25 @@ class MyLibraryActivity : AppCompatActivity() {
         })
 
         // To get names of the folders from the database
-        FirebaseDatabase.getInstance().reference.child("Library")
-            .child(Firebase.auth.currentUser!!.uid).addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        folderNameList.clear()
-                        for(item in snapshot.children){
-                            folderNameList.add(item.key.toString())
+        try {
+            FirebaseDatabase.getInstance().reference.child("Library")
+                .child(Firebase.auth.currentUser!!.uid).addValueEventListener(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            folderNameList.clear()
+                            for(item in snapshot.children){
+                                folderNameList.add(item.key.toString())
+                            }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
 
         addFolderButton = findViewById(R.id.addFolderButton)
@@ -114,41 +127,45 @@ class MyLibraryActivity : AppCompatActivity() {
         val okButton = view.findViewById<Button>(R.id.okButton)
         val cancelButton = view.findViewById<Button>(R.id.cancelButton)
 
-        okButton.setOnClickListener {
-            Log.i("folderNameList",folderNameList.toString())
-            if(eName.text.isNotEmpty()){
-                folder_name = eName.text.toString()
+        try {
+            okButton.setOnClickListener {
+                Log.i("folderNameList",folderNameList.toString())
+                if(eName.text.isNotEmpty()){
+                    folder_name = eName.text.toString()
 
-                folder_name = folder_name.replace(".","_")
-                folder_name = folder_name.replace("$","_dol_")
-                folder_name = folder_name.replace("[","(")
-                folder_name = folder_name.replace("]",")")
-                folder_name = folder_name.replace("#","_hash_")
-                folder_name = folder_name.replace("/","_")
+                    folder_name = folder_name.replace(".","_")
+                    folder_name = folder_name.replace("$","_dol_")
+                    folder_name = folder_name.replace("[","(")
+                    folder_name = folder_name.replace("]",")")
+                    folder_name = folder_name.replace("#","_hash_")
+                    folder_name = folder_name.replace("/","_")
 
-                Log.i("eName",folder_name)
-                if (folder_name.isNotEmpty()) {
+                    Log.i("eName",folder_name)
+                    if (folder_name.isNotEmpty()) {
 
-                    if(folderNameList.contains(folder_name)){
-                        Toast.makeText(view.context, "Folder name already exists.", Toast.LENGTH_SHORT).show()
-                        eName.setText("")
-                    }
-                    else{
-                        FirebaseDatabase.getInstance().reference.child("Library")
-                            .child(Firebase.auth.currentUser!!.uid)
-                            .child(folder_name).setValue("").addOnCompleteListener {
-                                if (it.isSuccessful) {
-                                    Toast.makeText(view.context, "Success", Toast.LENGTH_SHORT).show()
-                                    eName.setText("")
-                                } else {
-                                    Toast.makeText(view.context, "Failed", Toast.LENGTH_SHORT).show()
+                        if(folderNameList.contains(folder_name)){
+                            Toast.makeText(view.context, "Folder name already exists.", Toast.LENGTH_SHORT).show()
+                            eName.setText("")
+                        }
+                        else{
+                            FirebaseDatabase.getInstance().reference.child("Library")
+                                .child(Firebase.auth.currentUser!!.uid)
+                                .child(folder_name).setValue("").addOnCompleteListener {
+                                    if (it.isSuccessful) {
+                                        Toast.makeText(view.context, "Folder created", Toast.LENGTH_SHORT).show()
+                                        eName.setText("")
+                                    } else {
+                                        Toast.makeText(view.context, "Failed", Toast.LENGTH_SHORT).show()
+                                    }
                                 }
-                            }
+                        }
                     }
+                    dialog.dismiss()
                 }
-                dialog.dismiss()
             }
+        } catch (e: Exception) {
         }
+
         cancelButton.setOnClickListener {
             dialog.dismiss()
         }
@@ -157,26 +174,29 @@ class MyLibraryActivity : AppCompatActivity() {
         dialog = builder.create()
 
 
-        FirebaseDatabase.getInstance().reference.child("Library")
-            .child(Firebase.auth.currentUser!!.uid)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()){
-                        arrayList.clear()
-                        for (item in snapshot.children) {
-                            var folderName = item.key
-                            Log.i("okurrr", folderName.toString())
-                            arrayList.add(MyLibraryModel(uid,folderName.toString()))
-                            myLibraryAdapter.notifyDataSetChanged()
+        try {
+            FirebaseDatabase.getInstance().reference.child("Library")
+                .child(Firebase.auth.currentUser!!.uid)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            arrayList.clear()
+                            for (item in snapshot.children) {
+                                var folderName = item.key
+                                Log.i("okurrr", folderName.toString())
+                                arrayList.add(MyLibraryModel(uid,folderName.toString()))
+                                myLibraryAdapter.notifyDataSetChanged()
+                            }
                         }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
 
-            })
+                })
+        } catch (e: Exception) {
+        }
 
         addFolderButton.setOnClickListener {
             dialog.show()

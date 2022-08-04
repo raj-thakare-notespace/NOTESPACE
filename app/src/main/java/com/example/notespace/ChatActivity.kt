@@ -278,18 +278,21 @@ class ChatActivity : AppCompatActivity() {
                                                 .push().setValue(messageObject)
                                                 .addOnCompleteListener {
                                                     if (it.isSuccessful) {
-                                                        refreshMessages(senderRoom.toString(),messageList)
-                                                        PushNotification(
-                                                            NotificationData(
-                                                                titleNotification,
-                                                                messageNotification
-                                                            ),
-                                                            TOKEN
-                                                        ).also {
-                                                            try {
-                                                                sendNotification(it)
-                                                            } catch (e: Exception) {
+                                                        try {
+                                                            refreshMessages(senderRoom.toString(),messageList)
+                                                            PushNotification(
+                                                                NotificationData(
+                                                                    titleNotification,
+                                                                    messageNotification
+                                                                ),
+                                                                TOKEN
+                                                            ).also {
+                                                                try {
+                                                                    sendNotification(it)
+                                                                } catch (e: Exception) {
+                                                                }
                                                             }
+                                                        } catch (e: Exception) {
                                                         }
                                                     }
                                                 }

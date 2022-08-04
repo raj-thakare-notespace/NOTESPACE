@@ -87,12 +87,15 @@ class NotesActivity : AppCompatActivity() {
                 .child(FirebaseAuth.getInstance().currentUser!!.uid)
                 .addValueEventListener(object : ValueEventListener{
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        arrayList.clear()
-                        for(item in snapshot.children){
-                            val model = item.getValue(NoteModel::class.java)
-                            arrayList.add(model!!)
+                        if(snapshot.exists()){
+                            arrayList.clear()
+                            for(item in snapshot.children){
+                                val model = item.getValue(NoteModel::class.java)
+                                arrayList.add(model!!)
+                            }
+                            adapter.notifyDataSetChanged()
                         }
-                        adapter.notifyDataSetChanged()
+
                     }
 
                     override fun onCancelled(error: DatabaseError) {
