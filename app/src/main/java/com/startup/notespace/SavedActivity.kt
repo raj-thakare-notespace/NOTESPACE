@@ -40,7 +40,7 @@ class SavedActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recyclerViewPost)
 
-        adapter = PostAdapter(applicationContext, postList)
+        adapter = PostAdapter(this, postList)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -58,8 +58,8 @@ class SavedActivity : AppCompatActivity() {
                                 val post = dataSnapshot.getValue(Post::class.java)
                                 post!!.postId = dataSnapshot.key.toString()
                                 postList.add(post)
-                                Log.i("postrrr", post.toString())
                             }
+                            postList.reverse()
                             adapter.notifyDataSetChanged()
                         }
                     }

@@ -36,7 +36,7 @@ class FollowingFollowersAdapter(val context: Context, val arrayList: ArrayList<A
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val model = arrayList[position]
+        val model = arrayList[holder.adapterPosition]
         holder.displayName.text = model.displayName
         holder.username.text = model.username
         Glide.with(context)

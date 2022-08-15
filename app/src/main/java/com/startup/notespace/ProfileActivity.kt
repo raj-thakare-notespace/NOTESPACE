@@ -1,22 +1,14 @@
 package com.startup.notespace
 
-import android.Manifest
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
-import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -94,6 +86,26 @@ class ProfileActivity : AppCompatActivity() {
 
         rankImageView = findViewById(R.id.rankImageViewMyProfile)
 
+        var youTubeVideoLink : String = ""
+
+        try {
+            FirebaseDatabase.getInstance().reference.child("videos").child("youtube").child("howToUse")
+                .addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+                            youTubeVideoLink = snapshot.value.toString()
+                        }
+
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+        } catch (e: Exception) {
+        }
+
 
         followersLL = findViewById(R.id.followersLL)
         followingLL = findViewById(R.id.followingLL)
@@ -142,10 +154,11 @@ class ProfileActivity : AppCompatActivity() {
             view.findViewById<MaterialButton>(R.id.accountPrivateAlertDialog)
         val signOutBtnAlertDialogBtn = view.findViewById<MaterialButton>(R.id.signOutBtnAlertDialog)
         val aboutUsButton = view.findViewById<MaterialButton>(R.id.aboutUsAlertDialog)
-        val privacyPolicyAlertDialog = view.findViewById<MaterialButton>(R.id.privacyPolicyAlertDialog)
+        val howToUseAlertDialog = view.findViewById<MaterialButton>(R.id.howToUseAlertDialog)
 
-        privacyPolicyAlertDialog.setOnClickListener {
-            startActivity(Intent(this,PrivacyPolicyActivity::class.java))
+        howToUseAlertDialog.setOnClickListener {
+            Log.i("link",youTubeVideoLink)
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(youTubeVideoLink)))
             dialog.dismiss()
         }
 
@@ -421,7 +434,6 @@ class ProfileActivity : AppCompatActivity() {
         profilePictureIV = findViewById(R.id.profilePictureIV)
 
         changeProfilePictureIV.setOnClickListener {
-            if(isPermissionGranted(this)){
                 progressBar.visibility = View.VISIBLE
                 profilePictureIV.visibility = View.INVISIBLE
                 try {
@@ -429,10 +441,6 @@ class ProfileActivity : AppCompatActivity() {
                     startActivityForResult(intent, 11)
                 } catch (e: Exception) {
                 }
-            }
-            else{
-                takePermission(this)
-            }
 
         }
 
@@ -440,7 +448,7 @@ class ProfileActivity : AppCompatActivity() {
             database.reference.child("users")
                 .child(Firebase.auth.currentUser!!.uid)
                 .child("my_posts")
-                .addListenerForSingleValueEvent(object : ValueEventListener {
+                .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
                             postArrayList.clear()
@@ -515,63 +523,6 @@ class ProfileActivity : AppCompatActivity() {
 
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if(requestCode == 101){
-            if(grantResults.isNotEmpty()){
-                var readExternalStorage : Boolean = grantResults[0] == PackageManager.PERMISSION_GRANTED
-                if(readExternalStorage){
-                    Toast.makeText(this,"Read permission granted in android 10 or below",Toast.LENGTH_SHORT).show()
-                }
-                else{
-                    takePermission(this)
-                }
-            }
-        }
-
-    }
-
-    private fun isPermissionGranted(context: Context) : Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // For android 11
-            return Environment.isExternalStorageManager()
-        }
-        else{
-            // For below
-            val  readExternalStorageManager = ContextCompat.checkSelfPermission(context,android.Manifest.permission.READ_EXTERNAL_STORAGE)
-            return readExternalStorageManager == PackageManager.PERMISSION_GRANTED
-        }
-    }
-
-
-    private fun takePermission(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // For android 11
-
-            try {
-                var intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                intent.addCategory("android.intent.category.DEFAULT")
-                intent.data = Uri.parse(String.format("package:%s",context.packageName))
-                startActivityForResult(intent,100)
-            }
-            catch (e : Exception){
-                var intent = Intent()
-                intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
-                startActivityForResult(intent,100)
-            }
-
-        }
-        else{
-            // For below versions
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),101)
-
-        }
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -609,20 +560,6 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
 
-        // To manage permissions
-        if(requestCode == RESULT_OK){
-            if(requestCode == 100){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    // For android 11
-                    if(Environment.isExternalStorageManager()){
-                        Toast.makeText(this,"Permission Granted in android 11",Toast.LENGTH_SHORT).show()
-                    }
-                    else{
-                        takePermission(this)
-                    }
-                }
-            }
-        }
     }
 
 }

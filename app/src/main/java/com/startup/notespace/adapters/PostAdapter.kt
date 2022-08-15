@@ -61,6 +61,11 @@ class PostAdapter(var context: Context, private val arrayList: ArrayList<Post>) 
                 .placeholder(R.drawable.image_placeholder)
                 .into(holder.postImage)
 
+            if(!model.postImage.isNullOrEmpty()){
+                holder.postImage.visibility = View.VISIBLE
+                holder.postDoc.visibility = View.GONE
+            }
+
             if(model.postDescription.isNullOrEmpty()){
                 holder.postDescription.visibility = View.GONE
             }
@@ -68,7 +73,7 @@ class PostAdapter(var context: Context, private val arrayList: ArrayList<Post>) 
             holder.likeCount.text = model.postLike.toString()
             holder.createdAtTimeTV.text = Utils.getTimeAgo(model.postedAt)
 
-            if (model.docName.isNotEmpty())
+            if (!model.docUrl.isNullOrEmpty())
             {
                 holder.postImage.visibility = View.GONE
                 holder.postDoc.visibility = View.VISIBLE
@@ -85,7 +90,7 @@ class PostAdapter(var context: Context, private val arrayList: ArrayList<Post>) 
                 holder.pdfBlackNameLL.setOnClickListener {
                     val intent = Intent(context,ViewDocumentActivityPost::class.java)
                     intent.putExtra("path",model.docUrl)
-                    intent.putExtra("pdfName", arrayList[holder.adapterPosition].docName)
+                    intent.putExtra("pdfName", model.docName)
                     context.startActivity(intent)
                 }
             }
@@ -130,7 +135,7 @@ class PostAdapter(var context: Context, private val arrayList: ArrayList<Post>) 
 
                                 val intent = Intent(context,ViewDocumentActivityPost::class.java)
                                 intent.putExtra("path",model.docUrl)
-                                intent.putExtra("pdfName", arrayList[holder.adapterPosition].docName)
+                                intent.putExtra("pdfName", model.docName)
                                 context.startActivity(intent)
                             }
 
@@ -374,7 +379,6 @@ class PostAdapter(var context: Context, private val arrayList: ArrayList<Post>) 
 
         } catch (e: Exception) {
         }
-
     }
 
 

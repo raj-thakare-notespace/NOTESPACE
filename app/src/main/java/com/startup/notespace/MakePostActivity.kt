@@ -99,7 +99,6 @@ class MakePostActivity : AppCompatActivity() {
         createPostToolbar = findViewById(R.id.createPostToolBar)
 
         addDocumentButton.setOnClickListener {
-            if(isPermissionGranted(this)){
                 CODE = 1
                 cardView.visibility = View.VISIBLE
                 docPostBigIV.visibility = View.VISIBLE
@@ -108,10 +107,8 @@ class MakePostActivity : AppCompatActivity() {
                 intent.addCategory(Intent.CATEGORY_OPENABLE)
                 intent.type = "application/pdf"
                 startActivityForResult(intent, CHOOSE_PDF_FROM_DEVICE)
-            }
-            else{
-                takePermission(this)
-            }
+
+
         }
 
         createPostToolbar.setNavigationOnClickListener {
@@ -263,7 +260,6 @@ class MakePostActivity : AppCompatActivity() {
         }
 
         addImageButton.setOnClickListener {
-            if(isPermissionGranted(this)){
                 CODE = 0
                 cardView.visibility = View.GONE
                 docPostBigIV.visibility = View.GONE
@@ -273,72 +269,15 @@ class MakePostActivity : AppCompatActivity() {
                     startActivityForResult(intent, 11)
                 } catch (e: Exception) {
                 }
-            }
-            else{
-                takePermission(this)
-            }
+
         }
 
 
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if(requestCode == 101){
-            if(grantResults.isNotEmpty()){
-                var readExternalStorage : Boolean = grantResults[0] == PackageManager.PERMISSION_GRANTED
-                if(readExternalStorage){
-                    Toast.makeText(this,"Read permission granted in android 10 or below",Toast.LENGTH_SHORT).show()
-                }
-                else{
-                    takePermission(this)
-                }
-            }
-        }
-
-    }
-
-    private fun isPermissionGranted(context: Context) : Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // For android 11
-            return Environment.isExternalStorageManager()
-        }
-        else{
-            // For below
-            val  readExternalStorageManager = ContextCompat.checkSelfPermission(context,android.Manifest.permission.READ_EXTERNAL_STORAGE)
-            return readExternalStorageManager == PackageManager.PERMISSION_GRANTED
-        }
-    }
 
 
-    private fun takePermission(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // For android 11
 
-            try {
-                var intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                intent.addCategory("android.intent.category.DEFAULT")
-                intent.data = Uri.parse(String.format("package:%s",context.packageName))
-                startActivityForResult(intent,100)
-            }
-            catch (e : Exception){
-                var intent = Intent()
-                intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
-                startActivityForResult(intent,100)
-            }
-
-        }
-        else{
-            // For below versions
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),101)
-
-        }
-    }
 
     // For picking pdf from device
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -364,6 +303,7 @@ class MakePostActivity : AppCompatActivity() {
             }
         }
 
+        // for image selection
         if (requestCode == 11) {
             if (data?.data != null) {
 
@@ -373,21 +313,6 @@ class MakePostActivity : AppCompatActivity() {
                 postImageUri = it.toString()
                 postImageView.setImageURI(it)
                 uri = it!!
-            }
-        }
-
-        // To manage permissions
-        if(requestCode == RESULT_OK){
-            if(requestCode == 100){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    // For android 11
-                    if(Environment.isExternalStorageManager()){
-                        Toast.makeText(this,"Permission Granted in android 11",Toast.LENGTH_SHORT).show()
-                    }
-                    else{
-                        takePermission(this)
-                    }
-                }
             }
         }
     }

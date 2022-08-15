@@ -54,23 +54,23 @@ class MyLibrary3Adapter(val context: Context, var arrayList: ArrayList<MyLibrary
                     try {
                         Firebase.database.reference.child("Library")
                             .child(model.uid)
-                            .child(arrayList[position].folderName1)
-                            .child(arrayList[position].folderName2)
-                            .child(arrayList[position].folderName3)
-                            .child(arrayList[position].pdfName)
+                            .child(model.folderName1)
+                            .child(model.folderName2)
+                            .child(model.folderName3)
+                            .child(model.pdfName)
                             .removeValue().addOnSuccessListener {
                                 try {
                                     val reference = FirebaseStorage.getInstance().getReferenceFromUrl(url)
                                     Log.i("Thakare", reference.toString())
                                     reference.delete().addOnSuccessListener {
-                                        Toast.makeText(context, arrayList[position].pdfName + " Deleted", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, model.pdfName + " Deleted", Toast.LENGTH_SHORT).show()
                                     }
                                     Firebase.database.reference.child("libraryOfPdfUrls")
                                         .child(model.uid)
-                                        .child(arrayList[position].folderName1)
-                                        .child(arrayList[position].folderName2)
-                                        .child(arrayList[position].folderName3)
-                                        .child(arrayList[position].pdfName)
+                                        .child(model.folderName1)
+                                        .child(model.folderName2)
+                                        .child(model.folderName3)
+                                        .child(model.pdfName)
                                         .removeValue()
                                 } catch (e: Exception) {
                                 }
@@ -86,10 +86,10 @@ class MyLibrary3Adapter(val context: Context, var arrayList: ArrayList<MyLibrary
         }
 
         holder.itemView.setOnClickListener {
-            val pdfPath = arrayList[position].pdfUrl
+            val pdfPath = model.pdfUrl
             val intent = Intent(context, ViewDocumentActivity::class.java)
             intent.putExtra("path", pdfPath)
-            intent.putExtra("pdfName", arrayList[position].pdfName)
+            intent.putExtra("pdfName", model.pdfName)
             context.startActivity(intent)
 
 //            val intent = Intent(Intent.ACTION_VIEW)

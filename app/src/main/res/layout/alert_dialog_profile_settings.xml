@@ -36,21 +36,23 @@
         android:text="About Us" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/privacyPolicyAlertDialog"
+        android:id="@+id/howToUseAlertDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/aboutUsAlertDialog"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="8dp"
-        android:text="Privacy Policy" />
+        android:text="How To Use"
+        app:icon="@drawable/ic_play_video"
+        app:iconGravity="textStart" />
 
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/signOutBtnAlertDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/privacyPolicyAlertDialog"
+        android:layout_below="@id/howToUseAlertDialog"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:backgroundTint="@android:color/transparent"

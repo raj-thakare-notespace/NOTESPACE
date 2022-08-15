@@ -119,15 +119,17 @@ class GroupProfileOther : AppCompatActivity() {
         try {
             FirebaseDatabase.getInstance().reference.child("users")
                 .child(uid).child("members")
-                .child(Firebase.auth.currentUser!!.uid).addListenerForSingleValueEvent(object :
+                .child(Firebase.auth.currentUser!!.uid).addValueEventListener(object :
                     ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (!snapshot.exists()) {
                             libraryButton.visibility = View.INVISIBLE
                             joinGroupButton.text = "Join Group"
+                            joinGroupButton.isEnabled = true
                         } else {
                             libraryButton.visibility = View.VISIBLE
                             joinGroupButton.text = "Joined"
+                            joinGroupButton.isEnabled = false
                         }
                     }
 
@@ -192,7 +194,7 @@ class GroupProfileOther : AppCompatActivity() {
         libraryButton = findViewById(R.id.libraryButtonGPOther)
 
         libraryButton.setOnClickListener {
-            val intent = Intent(this, GroupLibrary::class.java)
+            val intent = Intent(this, GroupLibraryOther::class.java)
             intent.putExtra("uid", uid)
             intent.putExtra("createdBy", group.createdBy)
             startActivity(intent)

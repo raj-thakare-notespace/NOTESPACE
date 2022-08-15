@@ -46,16 +46,18 @@ class MyLibraryAdapter(val context: Context, var arrayList: ArrayList<MyLibraryM
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.folderName.text = arrayList[holder.adapterPosition].folderName1
+        val model = arrayList[holder.adapterPosition]
+
+        holder.folderName.text = model.folderName1
 
         val reference = FirebaseStorage.getInstance()
         var uidArrayList = ArrayList<String>()
-        if (!arrayList[holder.adapterPosition].folderName1.isNullOrEmpty()) {
+        if (!model.folderName1.isNullOrEmpty()) {
 
             try {
                 Firebase.database.reference.child("libraryOfPdfUrls")
                     .child(Firebase.auth.currentUser!!.uid)
-                    .child(arrayList[holder.adapterPosition].folderName1)
+                    .child(model.folderName1)
                     .addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             if(snapshot.exists()){
@@ -100,12 +102,12 @@ class MyLibraryAdapter(val context: Context, var arrayList: ArrayList<MyLibraryM
                                 try {
                                     Firebase.database.reference.child("Library")
                                         .child(Firebase.auth.currentUser!!.uid)
-                                        .child(arrayList[holder.adapterPosition].folderName1)
+                                        .child(model.folderName1)
                                         .removeValue().addOnCompleteListener {
                                             if (it.isSuccessful) {
                                                 Toast.makeText(
                                                     context,
-                                                    arrayList[holder.adapterPosition].folderName1 + " deleted.",
+                                                    model.folderName1 + " deleted.",
                                                     Toast.LENGTH_SHORT
                                                 ).show()
                                                 try {
@@ -115,7 +117,7 @@ class MyLibraryAdapter(val context: Context, var arrayList: ArrayList<MyLibraryM
                                                     }
                                                     Firebase.database.reference.child("libraryOfPdfUrls")
                                                         .child(Firebase.auth.currentUser!!.uid)
-                                                        .child(arrayList[holder.adapterPosition].folderName1)
+                                                        .child(model.folderName1)
                                                         .removeValue()
                                                 } catch (e: Exception) {
                                                 }
@@ -142,7 +144,7 @@ class MyLibraryAdapter(val context: Context, var arrayList: ArrayList<MyLibraryM
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, MyLibrary1::class.java)
-            intent.putExtra("folderName", arrayList[holder.adapterPosition].folderName1)
+            intent.putExtra("folderName", model.folderName1)
             intent.putExtra("uid", Firebase.auth.currentUser!!.uid)
             context.startActivity(intent)
         }

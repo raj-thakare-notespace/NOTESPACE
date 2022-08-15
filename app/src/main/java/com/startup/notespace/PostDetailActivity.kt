@@ -43,27 +43,23 @@ class PostDetailActivity : AppCompatActivity() {
             finish()
         }
 
-        toolbar.setOnMenuItemClickListener {
-            when(it.itemId){
-                R.id.downloadPost -> {
-
-                    try {
-                        Toast.makeText(this,"Downloading...",Toast.LENGTH_SHORT).show()
-                        if(isPermissionGranted(this)){
-                            downloadFile(postUri.toString())
-                        }
-                        else{
-                            takePermission(this)
-                        }
-                    } catch (e: Exception) {
-                    }
-                    true
-                }
-                else -> {
-                    false
-                }
-            }
-        }
+//        toolbar.setOnMenuItemClickListener {
+//            when(it.itemId){
+//                R.id.downloadPost -> {
+//
+//                    try {
+//                        Toast.makeText(this,"Downloading...",Toast.LENGTH_SHORT).show()
+//                            downloadFile(postUri.toString())
+//
+//                    } catch (e: Exception) {
+//                    }
+//                    true
+//                }
+//                else -> {
+//                    false
+//                }
+//            }
+//        }
 
         postImage = findViewById(R.id.postImageDetail)
 
@@ -81,81 +77,81 @@ class PostDetailActivity : AppCompatActivity() {
 
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if(requestCode == 101){
-            if(grantResults.isNotEmpty()){
-                var readExternalStorage : Boolean = grantResults[0] == PackageManager.PERMISSION_GRANTED
-                if(readExternalStorage){
-                    Toast.makeText(this,"Read permission granted in android 10 or below",Toast.LENGTH_SHORT).show()
-                }
-                else{
-                    takePermission(this)
-                }
-            }
-        }
-
-    }
-
-    private fun isPermissionGranted(context: Context) : Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // For android 11
-            return Environment.isExternalStorageManager()
-        }
-        else{
-            // For below
-            val  readExternalStorageManager = ContextCompat.checkSelfPermission(context,android.Manifest.permission.READ_EXTERNAL_STORAGE)
-            return readExternalStorageManager == PackageManager.PERMISSION_GRANTED
-        }
-    }
-
-
-    private fun takePermission(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // For android 11
-
-            try {
-                var intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                intent.addCategory("android.intent.category.DEFAULT")
-                intent.data = Uri.parse(String.format("package:%s",context.packageName))
-                startActivityForResult(intent,100)
-            }
-            catch (e : Exception){
-                var intent = Intent()
-                intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
-                startActivityForResult(intent,100)
-            }
-
-        }
-        else{
-            // For below versions
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),101)
-
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        // To manage permissions
-        if(requestCode == RESULT_OK){
-            if(requestCode == 100){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    // For android 11
-                    if(Environment.isExternalStorageManager()){
-                        Toast.makeText(this,"Permission Granted in android 11",Toast.LENGTH_SHORT).show()
-                    }
-                    else{
-                        takePermission(this)
-                    }
-                }
-            }
-        }
-    }
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//
+//        if(requestCode == 101){
+//            if(grantResults.isNotEmpty()){
+//                var readExternalStorage : Boolean = grantResults[0] == PackageManager.PERMISSION_GRANTED
+//                if(readExternalStorage){
+//                    Toast.makeText(this,"Read permission granted in android 10 or below",Toast.LENGTH_SHORT).show()
+//                }
+//                else{
+//                    takePermission(this)
+//                }
+//            }
+//        }
+//
+//    }
+//
+//    private fun isPermissionGranted(context: Context) : Boolean {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            // For android 11
+//            return Environment.isExternalStorageManager()
+//        }
+//        else{
+//            // For below
+//            val  readExternalStorageManager = ContextCompat.checkSelfPermission(context,android.Manifest.permission.READ_EXTERNAL_STORAGE)
+//            return readExternalStorageManager == PackageManager.PERMISSION_GRANTED
+//        }
+//    }
+//
+//
+//    private fun takePermission(context: Context) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            // For android 11
+//
+//            try {
+//                var intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+//                intent.addCategory("android.intent.category.DEFAULT")
+//                intent.data = Uri.parse(String.format("package:%s",context.packageName))
+//                startActivityForResult(intent,100)
+//            }
+//            catch (e : Exception){
+//                var intent = Intent()
+//                intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+//                startActivityForResult(intent,100)
+//            }
+//
+//        }
+//        else{
+//            // For below versions
+//            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),101)
+//
+//        }
+//    }
+//
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        // To manage permissions
+//        if(requestCode == RESULT_OK){
+//            if(requestCode == 100){
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//                    // For android 11
+//                    if(Environment.isExternalStorageManager()){
+//                        Toast.makeText(this,"Permission Granted in android 11",Toast.LENGTH_SHORT).show()
+//                    }
+//                    else{
+//                        takePermission(this)
+//                    }
+//                }
+//            }
+//        }
+//    }
 
 //    private fun checkPermission(url : String){
 //        Dexter.withContext(this)
@@ -184,30 +180,30 @@ class PostDetailActivity : AppCompatActivity() {
 //            }).check()
 //    }
 
-    fun downloadFile(url : String) {
-        PRDownloader.initialize(applicationContext)
-
-        var file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-
-        val time = Date().time.toString()
-
-        try {
-            PRDownloader.download(url, file.path, "$time.jpg")
-                .build()
-                .setOnStartOrResumeListener { }
-                .setOnPauseListener { }
-                .start(object : OnDownloadListener {
-                    override fun onDownloadComplete() {
-                        Toast.makeText(applicationContext,"Download Complete",Toast.LENGTH_SHORT).show()
-                    }
-                    override fun onError(error: com.downloader.Error?) {
-                        Toast.makeText(applicationContext,"Some error occurred",Toast.LENGTH_SHORT).show()
-                    }
-
-                    fun onError(error: Error?) {}
-                })
-        } catch (e: Exception) {
-        }
-    }
+//    fun downloadFile(url : String) {
+//        PRDownloader.initialize(applicationContext)
+//
+//        var file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+//
+//        val time = Date().time.toString()
+//
+//        try {
+//            PRDownloader.download(url, file.path, "$time.jpg")
+//                .build()
+//                .setOnStartOrResumeListener { }
+//                .setOnPauseListener { }
+//                .start(object : OnDownloadListener {
+//                    override fun onDownloadComplete() {
+//                        Toast.makeText(applicationContext,"Download Complete",Toast.LENGTH_SHORT).show()
+//                    }
+//                    override fun onError(error: com.downloader.Error?) {
+//                        Toast.makeText(applicationContext,"Some error occurred",Toast.LENGTH_SHORT).show()
+//                    }
+//
+//                    fun onError(error: Error?) {}
+//                })
+//        } catch (e: Exception) {
+//        }
+//    }
 
 }

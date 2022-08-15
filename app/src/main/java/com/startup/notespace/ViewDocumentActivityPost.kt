@@ -33,107 +33,30 @@ class ViewDocumentActivityPost : AppCompatActivity() {
     lateinit var dialog: ProgressDialog
     lateinit var toolbar: MaterialToolbar
 
-    private fun downloadFilePdf(url : String, name : String) {
-        PRDownloader.initialize(this)
-
-        var file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-
-        try {
-            PRDownloader.download(url, file.path, name.dropLast(4)+".pdf")
-                .build()
-                .setOnStartOrResumeListener { }
-                .setOnPauseListener { }
-                .start(object : OnDownloadListener {
-                    override fun onDownloadComplete() {
-                        Toast.makeText(applicationContext,"Download Complete.", Toast.LENGTH_SHORT).show()
-                    }
-                    override fun onError(error: com.downloader.Error?) {
-                        Toast.makeText(applicationContext,"Something went wrong.", Toast.LENGTH_SHORT).show()
-                    }
-
-                    fun onError(error: Error?) {}
-                })
-        } catch (e: Exception) {
-        }
-
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if(requestCode == 101){
-            if(grantResults.isNotEmpty()){
-                var readExternalStorage : Boolean = grantResults[0] == PackageManager.PERMISSION_GRANTED
-                if(readExternalStorage){
-                    Toast.makeText(this,"Read permission granted in android 10 or below",Toast.LENGTH_SHORT).show()
-                }
-                else{
-                    takePermission(this)
-                }
-            }
-        }
-
-    }
-
-    private fun isPermissionGranted(context: Context) : Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // For android 11
-            return Environment.isExternalStorageManager()
-        }
-        else{
-            // For below
-            val  readExternalStorageManager = ContextCompat.checkSelfPermission(context,android.Manifest.permission.READ_EXTERNAL_STORAGE)
-            return readExternalStorageManager == PackageManager.PERMISSION_GRANTED
-        }
-    }
-
-
-    private fun takePermission(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // For android 11
-
-            try {
-                var intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                intent.addCategory("android.intent.category.DEFAULT")
-                intent.data = Uri.parse(String.format("package:%s",context.packageName))
-                startActivityForResult(intent,100)
-            }
-            catch (e : Exception){
-                var intent = Intent()
-                intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
-                startActivityForResult(intent,100)
-            }
-
-        }
-        else{
-            // For below versions
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),101)
-
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        // To manage permissions
-        if(requestCode == RESULT_OK){
-            if(requestCode == 100){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    // For android 11
-                    if(Environment.isExternalStorageManager()){
-                        Toast.makeText(this,"Permission Granted in android 11",Toast.LENGTH_SHORT).show()
-                    }
-                    else{
-                        takePermission(this)
-                    }
-                }
-            }
-        }
-    }
-
+//    private fun downloadFilePdf(url : String, name : String) {
+//        PRDownloader.initialize(this)
+//
+//        var file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+//
+//        try {
+//            PRDownloader.download(url, file.path, name.dropLast(4)+".pdf")
+//                .build()
+//                .setOnStartOrResumeListener { }
+//                .setOnPauseListener { }
+//                .start(object : OnDownloadListener {
+//                    override fun onDownloadComplete() {
+//                        Toast.makeText(applicationContext,"Download Complete.", Toast.LENGTH_SHORT).show()
+//                    }
+//                    override fun onError(error: com.downloader.Error?) {
+//                        Toast.makeText(applicationContext,"Something went wrong.", Toast.LENGTH_SHORT).show()
+//                    }
+//
+//                    fun onError(error: Error?) {}
+//                })
+//        } catch (e: Exception) {
+//        }
+//
+//    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -155,39 +78,35 @@ class ViewDocumentActivityPost : AppCompatActivity() {
             finish()
         }
 
-        toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.download_post_view_doc -> {
-
-                    try {
-                        val builder = MaterialAlertDialogBuilder(this)
-                        builder.setTitle("Do you want to download this file?")
-                        builder.setCancelable(false)
-                            .setPositiveButton("Yes") { dialog, id ->
-
-                                Toast.makeText(this,"Downloading...",Toast.LENGTH_SHORT).show()
-
-                                if(isPermissionGranted(this)){
-                                    downloadFilePdf(pdfUrl.toString(),pdfName.toString())
-                                }
-                                else{
-                                    takePermission(this)
-                                }
-
-                            }
-                            .setNegativeButton("No") { dialog, id ->
-                                dialog.dismiss()
-                            }
-                        val alert = builder.create()
-                        alert.show()
-                    } catch (e: Exception) {
-                    }
-
-                    true
-                }
-                else -> false
-            }
-        }
+//        toolbar.setOnMenuItemClickListener {
+//            when (it.itemId) {
+//                R.id.download_post_view_doc -> {
+//
+//                    try {
+//                        val builder = MaterialAlertDialogBuilder(this)
+//                        builder.setTitle("Do you want to download this file?")
+//                        builder.setCancelable(false)
+//                            .setPositiveButton("Yes") { dialog, id ->
+//
+//                                Toast.makeText(this,"Downloading...",Toast.LENGTH_SHORT).show()
+//
+//                                    downloadFilePdf(pdfUrl.toString(),pdfName.toString())
+//
+//
+//                            }
+//                            .setNegativeButton("No") { dialog, id ->
+//                                dialog.dismiss()
+//                            }
+//                        val alert = builder.create()
+//                        alert.show()
+//                    } catch (e: Exception) {
+//                    }
+//
+//                    true
+//                }
+//                else -> false
+//            }
+//        }
 
 
 

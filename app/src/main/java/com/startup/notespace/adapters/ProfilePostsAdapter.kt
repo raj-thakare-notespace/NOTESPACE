@@ -36,14 +36,17 @@ class ProfilePostsAdapter(val context: Context, var arrayList: ArrayList<Post>) 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        val model = arrayList[holder.adapterPosition]
+
         Glide.with(context)
-            .load(arrayList[holder.adapterPosition].postImage)
+            .load(model.postImage)
             .into(holder.postImageView)
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context,PostDetailActivity::class.java)
-            intent.putExtra("uri",arrayList[holder.adapterPosition].postImage)
-            intent.putExtra("postedAt",arrayList[holder.adapterPosition].postedAt.toString())
+            intent.putExtra("uri",model.postImage)
+            intent.putExtra("postedAt",model.postedAt.toString())
             context.startActivity(intent)
         }
 
@@ -62,7 +65,7 @@ class ProfilePostsAdapter(val context: Context, var arrayList: ArrayList<Post>) 
                                             val post = item.getValue(Post::class.java)
                                             val uri = post!!.postImage
                                             val currentUid = item.key
-                                            if (uri == arrayList[holder.adapterPosition].postImage) {
+                                            if (uri == model.postImage) {
                                                 FirebaseDatabase.getInstance().reference.child("posts")
                                                     .child(currentUid.toString())
                                                     .removeValue().addOnCompleteListener {
@@ -104,7 +107,7 @@ class ProfilePostsAdapter(val context: Context, var arrayList: ArrayList<Post>) 
                                             val post = item.getValue(Post::class.java)
                                             val uri = post!!.postImage
                                             val currentUid = item.key
-                                            if (uri == arrayList[holder.adapterPosition].postImage) {
+                                            if (uri == model.postImage) {
                                                 FirebaseDatabase.getInstance().reference.child("users")
                                                     .child(FirebaseAuth.getInstance().currentUser!!.uid)
                                                     .child("my_posts")

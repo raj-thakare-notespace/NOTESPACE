@@ -68,7 +68,6 @@
     </RelativeLayout>
 
 
-
     <TextView
         android:id="@+id/profileDisplayNameGroup"
         android:layout_width="wrap_content"
@@ -77,6 +76,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:text="RAJ THAKARE"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:textColor="@color/black"
         android:textSize="22sp"
         android:textStyle="bold" />
@@ -88,6 +89,8 @@
         android:layout_below="@id/profileDisplayNameGroup"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="4dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:text="rajthakare237"
         android:textColor="@color/black"
         android:textSize="18sp" />
@@ -140,6 +143,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:text="Hello this is my bio how are you doing"
         android:textColor="@color/black"
         android:textSize="18sp" />
@@ -168,51 +173,3 @@
 
 
 </RelativeLayout>
-
-
-<!--<LinearLayout-->
-<!--android:id="@+id/membersLL"-->
-<!--android:layout_width="wrap_content"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:layout_below="@id/libraryButtonGP"-->
-<!--android:layout_centerHorizontal="true"-->
-<!--android:layout_marginTop="8dp"-->
-<!--android:layout_weight="1"-->
-<!--android:background="@drawable/edit_text_bg"-->
-<!--android:gravity="center"-->
-<!--android:orientation="horizontal"-->
-<!--android:padding="8dp">-->
-
-<!--<TextView-->
-<!--    android:id="@+id/noOfMembers"-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="wrap_content"-->
-<!--    android:layout_marginTop="8dp"-->
-<!--    android:layout_marginBottom="8dp"-->
-<!--    android:paddingRight="4dp"-->
-<!--    android:text="23"-->
-<!--    android:textColor="@color/black"-->
-<!--    android:textSize="18sp" />-->
-
-<!--<TextView-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="wrap_content"-->
-<!--    android:text="members"-->
-<!--    android:textColor="@color/black"-->
-<!--    android:textSize="18sp" />-->
-
-
-<!--</LinearLayout>-->
-
-
-
-<!--<TextView-->
-<!--android:id="@+id/profileGroupJoinCode"-->
-<!--android:layout_width="wrap_content"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:layout_below="@id/membersLL"-->
-<!--android:layout_centerHorizontal="true"-->
-<!--android:layout_marginTop="4dp"-->
-<!--android:text="Join code - ⚫⚫⚫⚫⚫⚫⚫"-->
-<!--android:textColor="@color/black"-->
-<!--android:textSize="18sp" />-->

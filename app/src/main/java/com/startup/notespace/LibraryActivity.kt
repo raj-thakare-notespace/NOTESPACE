@@ -1,44 +1,35 @@
 package com.startup.notespace
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.startup.notespace.adapters.LibraryAdapter
-import com.startup.notespace.models.MyLibraryModel
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.startup.notespace.adapters.LibraryAdapter
+import com.startup.notespace.models.MyLibraryModel
 
 class LibraryActivity : AppCompatActivity() {
 
-    lateinit var foldersRV : RecyclerView
+    lateinit var foldersRV: RecyclerView
 
-//    lateinit var noItemFoundTV : TextView
-    lateinit var fileNotFoundIV : ImageView
+    lateinit var fileNotFoundIV: ImageView
 
     lateinit var libraryAdapter: LibraryAdapter
 
     var arrayList = ArrayList<MyLibraryModel>()
 
-    var folder_name = ""
-
     private lateinit var toolbar: MaterialToolbar
 
     lateinit var searchView: SearchView
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Library1().finish()
-        Library2().finish()
-        Library3().finish()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +38,7 @@ class LibraryActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.toolBarLibraryOther)
 
         toolbar.setNavigationOnClickListener {
-            finish()
-            Library1().finish()
-            Library2().finish()
-            Library3().finish()
+            this.finish()
         }
 
         fileNotFoundIV = findViewById(R.id.fileNotFoundIV)
@@ -58,7 +46,7 @@ class LibraryActivity : AppCompatActivity() {
 
         searchView = findViewById(R.id.searchViewLibrary)
 
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 searchView.clearFocus()
                 return false
@@ -74,24 +62,24 @@ class LibraryActivity : AppCompatActivity() {
         val uid = intent.getStringExtra("uid")
 
         foldersRV = findViewById(R.id.foldersRVLibrary)
-        libraryAdapter = LibraryAdapter(this,arrayList)
+        libraryAdapter = LibraryAdapter(this, arrayList)
 
         foldersRV.layoutManager = LinearLayoutManager(this)
         foldersRV.adapter = libraryAdapter
 
-        Log.i("userIddd",uid.toString())
+        Log.i("userIddd", uid.toString())
 
         try {
             FirebaseDatabase.getInstance().reference.child("Library")
                 .child(uid!!.toString())
                 .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        if(snapshot.exists()){
+                        if (snapshot.exists()) {
                             arrayList.clear()
                             for (item in snapshot.children) {
                                 var folderName = item.key
                                 Log.i("android", folderName.toString())
-                                arrayList.add(MyLibraryModel(uid.toString(),folderName.toString()))
+                                arrayList.add(MyLibraryModel(uid.toString(), folderName.toString()))
                                 libraryAdapter.notifyDataSetChanged()
                             }
                         }
@@ -111,9 +99,9 @@ class LibraryActivity : AppCompatActivity() {
 
     private fun filterList(text: String?) {
         var filteredList = ArrayList<MyLibraryModel>()
-        for(item in arrayList){
+        for (item in arrayList) {
             if (text != null) {
-                if(item.folderName1.toLowerCase().contains(text.toLowerCase())){
+                if (item.folderName1.toLowerCase().contains(text.toLowerCase())) {
                     filteredList.add(item)
 //                    noItemFoundTV.visibility = View.GONE
                     fileNotFoundIV.visibility = View.GONE
@@ -122,12 +110,11 @@ class LibraryActivity : AppCompatActivity() {
             }
         }
 
-        if(filteredList.isEmpty()){
+        if (filteredList.isEmpty()) {
 //            noItemFoundTV.visibility = View.VISIBLE
             fileNotFoundIV.visibility = View.VISIBLE
             foldersRV.visibility = View.GONE
-        }
-        else{
+        } else {
             libraryAdapter.setFilteredList(filteredList)
         }
     }

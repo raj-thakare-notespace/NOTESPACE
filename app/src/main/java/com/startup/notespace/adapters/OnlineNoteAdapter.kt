@@ -53,35 +53,35 @@ class OnlineNoteAdapter(val context: Context, var arrayList: ArrayList<NoteModel
 
 
         Glide.with(context)
-            .load(arrayList[position].image)
+            .load(model.image)
             .into(holder.noteImageRV)
 
-        holder.noteTitle.text = arrayList[position].title
-        holder.noteDescription.text = arrayList[position].description
+        holder.noteTitle.text = model.title
+        holder.noteDescription.text = model.description
 
-        holder.cardView.setCardBackgroundColor(Color.parseColor(arrayList[position].color))
+        holder.cardView.setCardBackgroundColor(Color.parseColor(model.color))
 
-        if (arrayList[position].isPrivate) {
+        if (model.isPrivate) {
             holder.lock.visibility = View.VISIBLE
         } else {
             holder.lock.visibility = View.INVISIBLE
         }
 
-        if (arrayList[position].uid.toString() == FirebaseAuth.getInstance().currentUser!!.uid) {
+        if (model.uid.toString() == FirebaseAuth.getInstance().currentUser!!.uid) {
 
             holder.itemView.setOnClickListener {
                 val intent = Intent(context, CreateOnlineNoteActivity::class.java)
                 intent.putExtra("noteCode", "Edit")
-                intent.putExtra("noteTitle", arrayList[position].title)
-                intent.putExtra("noteImageUri", arrayList[position].image)
-                intent.putExtra("noteDesc", arrayList[position].description)
+                intent.putExtra("noteTitle", model.title)
+                intent.putExtra("noteImageUri", model.image)
+                intent.putExtra("noteDesc", model.description)
                 context.startActivity(intent)
             }
         } else {
             holder.itemView.setOnClickListener {
                 val intent = Intent(context, NoteDetailActivity::class.java)
-                intent.putExtra("uid", arrayList[position].uid)
-                intent.putExtra("noteTitle", arrayList[position].title)
+                intent.putExtra("uid", model.uid)
+                intent.putExtra("noteTitle", model.title)
                 context.startActivity(intent)
             }
         }
@@ -98,7 +98,7 @@ class OnlineNoteAdapter(val context: Context, var arrayList: ArrayList<NoteModel
                     try {
                         FirebaseDatabase.getInstance().reference.child("notes")
                             .child(FirebaseAuth.getInstance().currentUser!!.uid)
-                            .child(arrayList[position].title)
+                            .child(model.title)
                             .removeValue().addOnCompleteListener {
                                 if (it.isSuccessful) {
                                     Toast.makeText(context, "Deleted Successfully", Toast.LENGTH_SHORT).show()

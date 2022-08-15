@@ -133,10 +133,18 @@ class GroupChatActivity : AppCompatActivity() {
 
                 R.id.library -> {
 
-                    val intent = Intent(this, GroupLibrary::class.java)
-                    intent.putExtra("uid", uid)
-                    intent.putExtra("createdBy", createdBy)
-                    startActivity(intent)
+                    if(createdBy == Firebase.auth.currentUser!!.uid){
+                        val intent = Intent(this, GroupLibrary::class.java)
+                        intent.putExtra("uid", uid)
+                        intent.putExtra("createdBy", createdBy)
+                        startActivity(intent)
+                    }
+                    else{
+                        val intent = Intent(this, GroupLibraryOther::class.java)
+                        intent.putExtra("uid", uid)
+                        intent.putExtra("createdBy", createdBy)
+                        startActivity(intent)
+                    }
 
                     true
                 }

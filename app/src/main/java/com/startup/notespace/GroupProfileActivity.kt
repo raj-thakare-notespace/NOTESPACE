@@ -496,76 +496,13 @@ class GroupProfileActivity : AppCompatActivity() {
         }
 
         changeProfilePictureIV.setOnClickListener {
-            if(isPermissionGranted(this)){
                 profilePictureIV.visibility = View.INVISIBLE
                 progressBar.visibility = View.VISIBLE
                 val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 startActivityForResult(intent, 11)
-            }
-            else{
-                takePermission(this)
-            }
-
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if(requestCode == 101){
-            if(grantResults.isNotEmpty()){
-                var readExternalStorage : Boolean = grantResults[0] == PackageManager.PERMISSION_GRANTED
-                if(readExternalStorage){
-                    Toast.makeText(this,"Read permission granted in android 10 or below",Toast.LENGTH_SHORT).show()
-                }
-                else{
-                    takePermission(this)
-                }
-            }
-        }
-
-    }
-
-    private fun isPermissionGranted(context: Context) : Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // For android 11
-            return Environment.isExternalStorageManager()
-        }
-        else{
-            // For below
-            val  readExternalStorageManager = ContextCompat.checkSelfPermission(context,android.Manifest.permission.READ_EXTERNAL_STORAGE)
-            return readExternalStorageManager == PackageManager.PERMISSION_GRANTED
-        }
-    }
-
-
-    private fun takePermission(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // For android 11
-
-            try {
-                var intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                intent.addCategory("android.intent.category.DEFAULT")
-                intent.data = Uri.parse(String.format("package:%s",context.packageName))
-                startActivityForResult(intent,100)
-            }
-            catch (e : Exception){
-                var intent = Intent()
-                intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
-                startActivityForResult(intent,100)
-            }
-
-        }
-        else{
-            // For below versions
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),101)
-
-        }
-    }
 
     private fun sendNotification(notification: PushNotification) =
         CoroutineScope(Dispatchers.IO).launch {
@@ -622,20 +559,7 @@ class GroupProfileActivity : AppCompatActivity() {
                 }
             }
         }
-        // To manage permissions
-        if(requestCode == RESULT_OK){
-            if(requestCode == 100){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    // For android 11
-                    if(Environment.isExternalStorageManager()){
-                        Toast.makeText(this,"Permission Granted in android 11",Toast.LENGTH_SHORT).show()
-                    }
-                    else{
-                        takePermission(this)
-                    }
-                }
-            }
-        }
+
     }
 
 }

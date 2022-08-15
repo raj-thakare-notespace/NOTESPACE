@@ -40,15 +40,17 @@ class DocPostAdapter(val context: Context, var arrayList: ArrayList<DocPostModel
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.docName.text = arrayList[holder.adapterPosition].docName
+        val model = arrayList[holder.adapterPosition]
+
+        holder.docName.text = model.docName
 
         val ref = FirebaseStorage.getInstance()
 
         holder.itemView.setOnClickListener {
-            val pdfPath = arrayList[holder.adapterPosition].docUrl
+            val pdfPath = model.docUrl
             val intent = Intent(context, ViewDocumentActivityPost::class.java)
             intent.putExtra("path", pdfPath)
-            intent.putExtra("pdfName", arrayList[holder.adapterPosition].docName)
+            intent.putExtra("pdfName", model.docName)
             context.startActivity(intent)
         }
 
@@ -67,7 +69,7 @@ class DocPostAdapter(val context: Context, var arrayList: ArrayList<DocPostModel
                                             val post = item.getValue(Post::class.java)
                                             val uri = post!!.docUrl
                                             val currentUid = item.key
-                                            if (uri == arrayList[holder.adapterPosition].docUrl) {
+                                            if (uri == model.docUrl) {
                                                 FirebaseDatabase.getInstance().reference.child("posts")
                                                     .child(currentUid.toString())
                                                     .removeValue().addOnCompleteListener {
@@ -109,7 +111,7 @@ class DocPostAdapter(val context: Context, var arrayList: ArrayList<DocPostModel
                                             val post = item.getValue(Post::class.java)
                                             val uri = post!!.docUrl
                                             val currentUid = item.key
-                                            if (uri == arrayList[holder.adapterPosition].docUrl) {
+                                            if (uri == model.docUrl) {
                                                 FirebaseDatabase.getInstance().reference.child("users")
                                                     .child(FirebaseAuth.getInstance().currentUser!!.uid)
                                                     .child("my_document_posts")

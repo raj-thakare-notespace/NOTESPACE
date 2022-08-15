@@ -81,11 +81,24 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="48dp"
+        android:layout_above="@id/privacyPolicyTV"
+        android:layout_marginBottom="16dp"
         android:fontFamily="@font/kurale"
-        android:layout_alignParentBottom="true"
         android:text="Developer :- Raj Gajanan Thakare"
         android:textColor="@color/black"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/privacyPolicyTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="48dp"
+        android:fontFamily="@font/kurale"
+        android:text="View Privacy Policy"
+        android:textColor="@color/blue"
         android:textSize="18sp" />
 
 

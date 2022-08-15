@@ -91,8 +91,9 @@ class NotesActivity : AppCompatActivity() {
                             for(item in snapshot.children){
                                 val model = item.getValue(NoteModel::class.java)
                                 arrayList.add(model!!)
+                                adapter.notifyDataSetChanged()
                             }
-                            adapter.notifyDataSetChanged()
+
                         }
 
                     }

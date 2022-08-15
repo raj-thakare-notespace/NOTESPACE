@@ -47,108 +47,16 @@ class LibraryAdapter(val context: Context, var arrayList: ArrayList<MyLibraryMod
 
         holder.itemView.setOnClickListener {
 
-            try {
-                FirebaseDatabase.getInstance().reference.child("users")
-                    .child(arrayList[holder.adapterPosition].uid).addValueEventListener(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            if(snapshot.exists()){
-                                if (snapshot.key!!.length < 25) {
-                                    FirebaseDatabase.getInstance().reference.child("users")
-                                        .child(arrayList[holder.adapterPosition].uid)
-                                        .child("createdBy")
-                                        .addValueEventListener(object : ValueEventListener {
-                                            override fun onDataChange(snapshot: DataSnapshot) {
-                                                if(snapshot.exists()){
-                                                    var ans = snapshot.value!!.toString() == Firebase.auth.currentUser!!.uid
-                                                    if (ans) {
-                                                        val intent = Intent(context, MyLibrary1::class.java)
-                                                        intent.putExtra(
-                                                            "folderName",
-                                                            arrayList[holder.adapterPosition].folderName1
-                                                        )
-                                                        intent.putExtra(
-                                                            "uid",
-                                                            arrayList[holder.adapterPosition].uid
-                                                        )
-                                                        context.startActivity(intent)
-                                                    }
-                                                    else {
-                                                        val intent = Intent(context, Library1::class.java)
-                                                        intent.putExtra(
-                                                            "folderName",
-                                                            arrayList[holder.adapterPosition].folderName1
-                                                        )
-                                                        intent.putExtra(
-                                                            "uid",
-                                                            arrayList[holder.adapterPosition].uid
-                                                        )
-                                                        context.startActivity(intent)
-                                                    }
-                                                }
-                                            }
-
-                                            override fun onCancelled(error: DatabaseError) {
-                                                TODO("Not yet implemented")
-                                            }
-
-                                        })
-                                }
-                                else {
-                                    try {
-                                        FirebaseDatabase.getInstance().reference.child("users")
-                                            .child(arrayList[holder.adapterPosition].uid)
-                                            .child("uid")
-                                            .addValueEventListener(object : ValueEventListener {
-                                                override fun onDataChange(snapshot: DataSnapshot) {
-                                                    if(snapshot.exists()){
-                                                        var ans = snapshot.value!!.toString() == Firebase.auth.currentUser!!.uid
-                                                        if (ans) {
-                                                            val intent =
-                                                                Intent(context, MyLibrary1::class.java)
-                                                            intent.putExtra(
-                                                                "folderName",
-                                                                arrayList[holder.adapterPosition].folderName1
-                                                            )
-                                                            intent.putExtra(
-                                                                "uid",
-                                                                arrayList[holder.adapterPosition].uid
-                                                            )
-                                                            context.startActivity(intent)
-                                                        }
-                                                        else {
-                                                            val intent =
-                                                                Intent(context, Library1::class.java)
-                                                            intent.putExtra(
-                                                                "folderName",
-                                                                arrayList[holder.adapterPosition].folderName1
-                                                            )
-                                                            intent.putExtra(
-                                                                "uid",
-                                                                arrayList[holder.adapterPosition].uid
-                                                            )
-                                                            context.startActivity(intent)
-                                                        }
-                                                    }
-                                                }
-
-                                                override fun onCancelled(error: DatabaseError) {
-                                                    TODO("Not yet implemented")
-                                                }
-
-                                            })
-                                    } catch (e: Exception) {
-                                    }
-                                }
-                            }
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            TODO("Not yet implemented")
-                        }
-
-                    })
-            } catch (e: Exception) {
-            }
+            val intent = Intent(context, Library1::class.java)
+            intent.putExtra(
+                "folderName",
+                arrayList[holder.adapterPosition].folderName1
+            )
+            intent.putExtra(
+                "uid",
+                arrayList[holder.adapterPosition].uid
+            )
+            context.startActivity(intent)
 
 
         }
@@ -160,3 +68,106 @@ class LibraryAdapter(val context: Context, var arrayList: ArrayList<MyLibraryMod
 
 
 }
+
+//try {
+//    FirebaseDatabase.getInstance().reference.child("users")
+//        .child(arrayList[holder.adapterPosition].uid).addValueEventListener(object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                if(snapshot.exists()){
+//                    if (snapshot.key!!.length < 25) {
+//                        FirebaseDatabase.getInstance().reference.child("users")
+//                            .child(arrayList[holder.adapterPosition].uid)
+//                            .child("createdBy")
+//                            .addValueEventListener(object : ValueEventListener {
+//                                override fun onDataChange(snapshot: DataSnapshot) {
+//                                    if(snapshot.exists()){
+//                                        var ans = snapshot.value!!.toString() == Firebase.auth.currentUser!!.uid
+//                                        if (ans) {
+//                                            val intent = Intent(context, MyLibrary1::class.java)
+//                                            intent.putExtra(
+//                                                "folderName",
+//                                                arrayList[holder.adapterPosition].folderName1
+//                                            )
+//                                            intent.putExtra(
+//                                                "uid",
+//                                                arrayList[holder.adapterPosition].uid
+//                                            )
+//                                            context.startActivity(intent)
+//                                        }
+//                                        else {
+//                                            val intent = Intent(context, Library1::class.java)
+//                                            intent.putExtra(
+//                                                "folderName",
+//                                                arrayList[holder.adapterPosition].folderName1
+//                                            )
+//                                            intent.putExtra(
+//                                                "uid",
+//                                                arrayList[holder.adapterPosition].uid
+//                                            )
+//                                            context.startActivity(intent)
+//                                        }
+//                                    }
+//                                }
+//
+//                                override fun onCancelled(error: DatabaseError) {
+//                                    TODO("Not yet implemented")
+//                                }
+//
+//                            })
+//                    }
+//                    else {
+//                        try {
+//                            FirebaseDatabase.getInstance().reference.child("users")
+//                                .child(arrayList[holder.adapterPosition].uid)
+//                                .child("uid")
+//                                .addValueEventListener(object : ValueEventListener {
+//                                    override fun onDataChange(snapshot: DataSnapshot) {
+//                                        if(snapshot.exists()){
+//                                            var ans = snapshot.value!!.toString() == Firebase.auth.currentUser!!.uid
+//                                            if (ans) {
+//                                                val intent =
+//                                                    Intent(context, MyLibrary1::class.java)
+//                                                intent.putExtra(
+//                                                    "folderName",
+//                                                    arrayList[holder.adapterPosition].folderName1
+//                                                )
+//                                                intent.putExtra(
+//                                                    "uid",
+//                                                    arrayList[holder.adapterPosition].uid
+//                                                )
+//                                                context.startActivity(intent)
+//                                            }
+//                                            else {
+//                                                val intent =
+//                                                    Intent(context, Library1::class.java)
+//                                                intent.putExtra(
+//                                                    "folderName",
+//                                                    arrayList[holder.adapterPosition].folderName1
+//                                                )
+//                                                intent.putExtra(
+//                                                    "uid",
+//                                                    arrayList[holder.adapterPosition].uid
+//                                                )
+//                                                context.startActivity(intent)
+//                                            }
+//                                        }
+//                                    }
+//
+//                                    override fun onCancelled(error: DatabaseError) {
+//                                        TODO("Not yet implemented")
+//                                    }
+//
+//                                })
+//                        } catch (e: Exception) {
+//                        }
+//                    }
+//                }
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                TODO("Not yet implemented")
+//            }
+//
+//        })
+//} catch (e: Exception) {
+//}

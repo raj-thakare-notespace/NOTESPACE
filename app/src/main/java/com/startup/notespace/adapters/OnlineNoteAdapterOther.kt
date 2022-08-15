@@ -43,21 +43,23 @@ class OnlineNoteAdapterOther(val context: Context, var arrayList: ArrayList<Note
     @SuppressLint("Range")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+        val model = arrayList[holder.adapterPosition]
+
         holder.lock.visibility = View.GONE
 
         Glide.with(context)
-            .load(arrayList[position].image)
+            .load(model.image)
             .into(holder.noteImageRV)
 
-        holder.noteTitle.text = arrayList[position].title
-        holder.noteDescription.text = arrayList[position].description
+        holder.noteTitle.text = model.title
+        holder.noteDescription.text = model.description
 
-        holder.cardView.setCardBackgroundColor(Color.parseColor(arrayList[position].color))
+        holder.cardView.setCardBackgroundColor(Color.parseColor(model.color))
 
             holder.itemView.setOnClickListener {
                 val intent = Intent(context, NoteDetailActivity::class.java)
-                intent.putExtra("uid",arrayList[position].uid)
-                intent.putExtra("noteTitle",arrayList[position].title)
+                intent.putExtra("uid",model.uid)
+                intent.putExtra("noteTitle",model.title)
                 context.startActivity(intent)
             }
 

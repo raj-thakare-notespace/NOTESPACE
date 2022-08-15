@@ -114,15 +114,15 @@ class SignUpVerification : AppCompatActivity() {
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     db.reference.child("users").child(auth.currentUser!!.uid).child("rank")
-                        .child("Helpful").setValue(0)
+                        .child("Helpful").setValue(0L)
                     db.reference.child("users").child(auth.currentUser!!.uid).child("rank")
-                        .child("Resourceful").setValue(0)
+                        .child("Resourceful").setValue(0L)
                     db.reference.child("users").child(auth.currentUser!!.uid).child("rank")
-                        .child("Genius").setValue(0)
+                        .child("Genius").setValue(0L)
                     db.reference.child("users").child(auth.currentUser!!.uid).child("rank")
-                        .child("Reliable").setValue(0)
+                        .child("Reliable").setValue(0L)
                     db.reference.child("users").child(auth.currentUser!!.uid).child("rank")
-                        .child("Problem Solver").setValue(0)
+                        .child("Problem Solver").setValue(0L)
                     Toast.makeText(this, "success", Toast.LENGTH_SHORT).show()
 
                     FirebaseService.sharedPref = getSharedPreferences("sharedPref", Context.MODE_PRIVATE)

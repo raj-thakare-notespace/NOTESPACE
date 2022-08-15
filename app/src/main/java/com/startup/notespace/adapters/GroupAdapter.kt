@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -51,6 +52,7 @@ class GroupAdapter(val context: Context, var arrayList: ArrayList<Group>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model = arrayList[holder.adapterPosition]
+
         holder.displayName.text = model.displayName
         Glide.with(context)
             .load(model.profilePicture)
@@ -119,22 +121,24 @@ class GroupAdapter(val context: Context, var arrayList: ArrayList<Group>) :
                 builder.setTitle("Are you sure you want to Delete?")
                 builder.setCancelable(false)
                     .setPositiveButton("Yes") { dialog, id ->
-                        if (arrayList[holder.adapterPosition].createdBy == Firebase.auth.currentUser!!.uid) {
-                            val ans = arrayList[holder.adapterPosition].createdBy == Firebase.auth.currentUser!!.uid
+                        if (model.createdBy == Firebase.auth.currentUser!!.uid) {
+                            val ans = model.createdBy == Firebase.auth.currentUser!!.uid
                             try {
                                 FirebaseDatabase.getInstance().reference.child("users")
                                     .child(FirebaseAuth.getInstance().currentUser!!.uid)
                                     .child("my_created_groups")
-                                    .child(arrayList[holder.adapterPosition].uid).removeValue()
+                                    .child(model.uid).removeValue()
 
                                 Firebase.database.reference.child("users")
                                     .child(Firebase.auth.currentUser!!.uid)
                                     .child("my_groups")
-                                    .child(arrayList[holder.adapterPosition].uid)
-                                    .removeValue()
+                                    .child(model.uid)
+                                    .removeValue().addOnSuccessListener {
+                                        Toast.makeText(context,"Deleted Successfully.",Toast.LENGTH_SHORT).show()
+                                    }
 
                                 Firebase.database.reference.child("users")
-                                    .child(arrayList[holder.adapterPosition].uid)
+                                    .child(model.uid)
                                     .removeValue()
 
                             } catch (e: Exception) {
@@ -144,14 +148,16 @@ class GroupAdapter(val context: Context, var arrayList: ArrayList<Group>) :
 
                         else {
                             try {
-                                Firebase.database.reference.child("users").child(arrayList[holder.adapterPosition].uid)
+                                Firebase.database.reference.child("users").child(model.uid)
                                     .child("members").child(Firebase.auth.currentUser!!.uid)
                                     .removeValue().addOnSuccessListener {
                                         Firebase.database.reference.child("users")
                                             .child(Firebase.auth.currentUser!!.uid)
                                             .child("my_groups")
-                                            .child(arrayList[holder.adapterPosition].uid)
-                                            .removeValue()
+                                            .child(model.uid)
+                                            .removeValue().addOnSuccessListener {
+                                                Toast.makeText(context,"Deleted Successfully.",Toast.LENGTH_SHORT).show()
+                                            }
                                     }
                             } catch (e: Exception) {
                             }
@@ -173,11 +179,11 @@ class GroupAdapter(val context: Context, var arrayList: ArrayList<Group>) :
         holder.itemView.setOnClickListener {
             holder.cardViewMsgBadgeGPItem.visibility = View.INVISIBLE
             val intent = Intent(context, GroupChatActivity::class.java)
-            intent.putExtra("usernameGroup", arrayList[holder.adapterPosition].username)
-            intent.putExtra("groupDisplayName", arrayList[holder.adapterPosition].displayName)
-            intent.putExtra("createdBy", arrayList[holder.adapterPosition].createdBy)
-            intent.putExtra("profilePicture", arrayList[holder.adapterPosition].profilePicture)
-            intent.putExtra("uid", arrayList[holder.adapterPosition].uid)
+            intent.putExtra("usernameGroup", model.username)
+            intent.putExtra("groupDisplayName", model.displayName)
+            intent.putExtra("createdBy", model.createdBy)
+            intent.putExtra("profilePicture", model.profilePicture)
+            intent.putExtra("uid", model.uid)
             context.startActivity(intent)
         }
     }

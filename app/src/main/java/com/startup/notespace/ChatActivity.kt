@@ -11,10 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.startup.notespace.adapters.MessageAdapter
-import com.startup.notespace.models.AllChatModel
-import com.startup.notespace.models.MessageModel
-import com.startup.notespace.models.NotificationData
-import com.startup.notespace.models.PushNotification
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -22,7 +18,9 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.startup.notespace.models.*
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -95,6 +93,8 @@ class ChatActivity : AppCompatActivity() {
         val name = intent.getStringExtra("username")
         val profileImg = intent.getStringExtra("profileImage")
 
+
+
         refreshChattedListUidOnly()
 
         chatRecyclerView = findViewById(R.id.chatRecyclerView)
@@ -116,12 +116,31 @@ class ChatActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        usernameTV.text = name
-        Glide.with(this)
-            .load(profileImg)
-            .placeholder(R.drawable.profile_placeholder)
-            .into(profileImage)
 
+        try {
+            Firebase.database.reference.child("users").child(receiverUid.toString())
+                .addValueEventListener(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if(snapshot.exists()){
+
+                            val model = snapshot.getValue(User::class.java)!!
+                            Glide.with(applicationContext)
+                                .load(model.profilePicture)
+                                .placeholder(R.drawable.profile_placeholder)
+                                .into(profileImage)
+                            usernameTV.text = model.username
+
+                        }
+
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+        } catch (e: Exception) {
+        }
 
 
         val senderUid = Firebase.auth.currentUser!!.uid

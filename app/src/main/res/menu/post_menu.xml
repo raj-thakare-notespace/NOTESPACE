@@ -3,6 +3,6 @@
 
     <item
         android:id="@+id/download_post"
-        android:title="Download"/>
+        android:title="View"/>
 
 </menu>

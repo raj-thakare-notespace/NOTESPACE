@@ -134,9 +134,9 @@ class AllChatAdapter(val context: Context, val arrayList: ArrayList<AllChatModel
         holder.itemView.setOnClickListener {
             holder.cardViewMsgBadge.visibility = View.INVISIBLE
             val intent = Intent(context, ChatActivity::class.java)
-            intent.putExtra("username", arrayList[position].username)
-            intent.putExtra("userId", arrayList[position].uid)
-            intent.putExtra("profileImage", arrayList[position].profilePicture)
+            intent.putExtra("username", model.username)
+            intent.putExtra("userId", model.uid)
+            intent.putExtra("profileImage", model.profilePicture)
             context.startActivity(intent)
         }
 

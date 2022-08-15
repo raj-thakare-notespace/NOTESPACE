@@ -54,7 +54,6 @@ class GroupFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        groupAdapter.notifyDataSetChanged()
         try {
             FirebaseDatabase.getInstance().reference.child("users")
                 .child(FirebaseAuth.getInstance().currentUser!!.uid)
@@ -62,9 +61,11 @@ class GroupFragment : Fragment() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if(!snapshot.exists()){
                             groupNotFoundRL.visibility = View.VISIBLE
+                            groupRecyclerView.visibility = View.GONE
                         }
                         else {
                             groupNotFoundRL.visibility = View.GONE
+                            groupRecyclerView.visibility = View.VISIBLE
                         }
                     }
 
@@ -155,7 +156,7 @@ class GroupFragment : Fragment() {
                                 try {
                                     FirebaseDatabase.getInstance().reference.child("users")
                                         .child(groupUid)
-                                        .addValueEventListener(object : ValueEventListener {
+                                        .addListenerForSingleValueEvent(object : ValueEventListener {
                                             override fun onDataChange(snapshot: DataSnapshot) {
                                                 if (snapshot.exists()) {
                                                     val model = snapshot.getValue(Group::class.java)
@@ -183,7 +184,6 @@ class GroupFragment : Fragment() {
                                 }
 
                             }
-
                         }
                     }
 

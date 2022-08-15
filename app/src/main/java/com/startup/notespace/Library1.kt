@@ -23,14 +23,10 @@ import java.util.ArrayList
 class Library1 : AppCompatActivity() {
 
 
-    val storage = Firebase.storage
-
     lateinit var toolBarLibraryDetail : MaterialToolbar
 
     lateinit var searchView: SearchView
 
-
-    lateinit var uri: Uri
 
     private var arrayListDoc = ArrayList<MyLibrary1Model>()
 
@@ -39,12 +35,7 @@ class Library1 : AppCompatActivity() {
 
     lateinit var fileNotFoundIV : ImageView
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Library2().finish()
-        Library3().finish()
 
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,9 +65,7 @@ class Library1 : AppCompatActivity() {
         toolBarLibraryDetail = findViewById(R.id.folderToolBarLibraryDetail)
 
         toolBarLibraryDetail.setNavigationOnClickListener {
-            finish()
-            Library2().finish()
-            Library3().finish()
+            this.finish()
         }
 
 
@@ -106,7 +95,6 @@ class Library1 : AppCompatActivity() {
 
                                 var count = 0
                                 for(i in item.children){
-                                    Log.i("abcdefgh",i.value.toString())
                                     count++
                                 }
 
@@ -130,6 +118,7 @@ class Library1 : AppCompatActivity() {
 
                 })
         } catch (e: Exception) {
+            Log.i("island",e.toString())
         }
 
     }

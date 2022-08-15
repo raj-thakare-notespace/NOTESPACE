@@ -38,10 +38,6 @@ class Library2 : AppCompatActivity() {
 
     lateinit var fileNotFoundIV: ImageView
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Library3().finish()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +71,6 @@ class Library2 : AppCompatActivity() {
 
         toolBarLibraryDetail.setNavigationOnClickListener {
             finish()
-            Library3().finish()
         }
 
 

@@ -47,6 +47,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:text="RAJ THAKARE"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:textColor="@color/black"
         android:textSize="22sp"
         android:textStyle="bold" />
@@ -59,6 +61,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="4dp"
         android:text="rajthakare237"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:textColor="@color/black"
         android:textSize="18sp" />
 
@@ -100,6 +104,8 @@
         android:layout_below="@id/profileUsernameGroupOther"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:text="Hello this is my bio how are you doing"
         android:textColor="@color/black"

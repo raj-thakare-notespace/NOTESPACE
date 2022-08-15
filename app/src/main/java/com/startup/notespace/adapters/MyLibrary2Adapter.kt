@@ -55,14 +55,14 @@ class MyLibrary2Adapter(val context: Context, var arrayList: ArrayList<MyLibrary
 
         val reference = FirebaseStorage.getInstance()
         var uidArrayList = ArrayList<String>()
-        if (!arrayList[position].folderName1.isNullOrEmpty() && !arrayList[position].folderName2.isNullOrEmpty() && !arrayList[position].folderName3.isNullOrEmpty()) {
+        if (!model.folderName1.isNullOrEmpty() && !model.folderName2.isNullOrEmpty() && !model.folderName3.isNullOrEmpty()) {
 
             try {
                 Firebase.database.reference.child("libraryOfPdfUrls")
                     .child(model.uid)
-                    .child(arrayList[position].folderName1)
-                    .child(arrayList[position].folderName2)
-                    .child(arrayList[position].folderName3)
+                    .child(model.folderName1)
+                    .child(model.folderName2)
+                    .child(model.folderName3)
                     .addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             if(snapshot.exists()){
@@ -91,10 +91,10 @@ class MyLibrary2Adapter(val context: Context, var arrayList: ArrayList<MyLibrary
             }
         }
 
-        if (arrayList[position].folderName3 == "folderTrue" || arrayList[position].folderName3.isNotEmpty() || arrayList[position].pdfName.isEmpty()) {
+        if (model.folderName3 == "folderTrue" || model.folderName3.isNotEmpty() || model.pdfName.isEmpty()) {
             holder.rlforpdf.visibility = View.GONE
             holder.rlforfolder.visibility = View.VISIBLE
-            holder.folderName.text = arrayList[position].folderName3
+            holder.folderName.text = model.folderName3
         } else {
             holder.rlforfolder.visibility = View.GONE
             holder.rlforpdf.visibility = View.VISIBLE
@@ -110,9 +110,9 @@ class MyLibrary2Adapter(val context: Context, var arrayList: ArrayList<MyLibrary
                     try {
                         Firebase.database.reference.child("Library")
                             .child(model.uid)
-                            .child(arrayList[position].folderName1)
-                            .child(arrayList[position].folderName2)
-                            .child(arrayList[position].pdfName!!)
+                            .child(model.folderName1)
+                            .child(model.folderName2)
+                            .child(model.pdfName!!)
                             .removeValue().addOnSuccessListener {
                                 try {
                                     val reference =
@@ -121,7 +121,7 @@ class MyLibrary2Adapter(val context: Context, var arrayList: ArrayList<MyLibrary
                                     reference.delete().addOnSuccessListener {
                                         Toast.makeText(
                                             context,
-                                            arrayList[position].pdfName + " Deleted",
+                                            model.pdfName + " Deleted",
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
@@ -149,14 +149,14 @@ class MyLibrary2Adapter(val context: Context, var arrayList: ArrayList<MyLibrary
                     try {
                         Firebase.database.reference.child("Library")
                             .child(model.uid)
-                            .child(arrayList[position].folderName1)
-                            .child(arrayList[position].folderName2)
-                            .child(arrayList[position].folderName3)
+                            .child(model.folderName1)
+                            .child(model.folderName2)
+                            .child(model.folderName3)
                             .removeValue().addOnCompleteListener {
                                 if (it.isSuccessful) {
                                     Toast.makeText(
                                         context,
-                                        arrayList[holder.adapterPosition].folderName3 + " deleted.",
+                                        model.folderName3 + " deleted.",
                                         Toast.LENGTH_SHORT
                                     ).show()
                                     try {
@@ -166,9 +166,9 @@ class MyLibrary2Adapter(val context: Context, var arrayList: ArrayList<MyLibrary
                                         }
                                         Firebase.database.reference.child("libraryOfPdfUrls")
                                             .child(model.uid)
-                                            .child(arrayList[position].folderName1)
-                                            .child(arrayList[position].folderName2)
-                                            .child(arrayList[position].folderName3)
+                                            .child(model.folderName1)
+                                            .child(model.folderName2)
+                                            .child(model.folderName3)
                                             .removeValue()
                                     } catch (e: Exception) {
                                     }
@@ -187,18 +187,18 @@ class MyLibrary2Adapter(val context: Context, var arrayList: ArrayList<MyLibrary
 
         holder.rlforfolder.setOnClickListener {
             val intent = Intent(context, MyLibrary3::class.java)
-            intent.putExtra("folderName3", arrayList[position].folderName3)
-            intent.putExtra("folderName2", arrayList[position].folderName2)
-            intent.putExtra("folderName1", arrayList[position].folderName1)
-            intent.putExtra("uid", arrayList[position].uid)
+            intent.putExtra("folderName3", model.folderName3)
+            intent.putExtra("folderName2", model.folderName2)
+            intent.putExtra("folderName1", model.folderName1)
+            intent.putExtra("uid", model.uid)
             context.startActivity(intent)
         }
 
         holder.rlforpdf.setOnClickListener {
-            val pdfPath = arrayList[position].pdfUrl
+            val pdfPath = model.pdfUrl
             val intent = Intent(context, ViewDocumentActivity::class.java)
             intent.putExtra("path", pdfPath)
-            intent.putExtra("pdfName", arrayList[position].pdfName)
+            intent.putExtra("pdfName", model.pdfName)
             context.startActivity(intent)
 
         }

@@ -70,17 +70,17 @@ class MembersAdapter(val context: Context, val arrayList: ArrayList<GroupMemberM
                 builder.setCancelable(false)
                     .setPositiveButton("Yes") { dialog, id ->
                         Firebase.database.reference.child("users")
-                            .child(arrayList[holder.position].groupUid.toString())
+                            .child(model.groupUid.toString())
                             .child("members")
                             .addValueEventListener(object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     if(snapshot.exists()){
                                         for (item in snapshot.children) {
-                                            if (item.key.toString() == arrayList[holder.position].uid) {
+                                            if (item.key.toString() == model.uid) {
                                                 Firebase.database.reference.child("users")
-                                                    .child(arrayList[holder.position].groupUid.toString())
+                                                    .child(model.groupUid.toString())
                                                     .child("members")
-                                                    .child(arrayList[holder.position].uid)
+                                                    .child(model.uid)
                                                     .removeValue()
                                                     .addOnCompleteListener {
                                                         if (it.isSuccessful) {

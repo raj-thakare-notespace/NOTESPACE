@@ -24,7 +24,6 @@
             app:navigationIcon="@drawable/ic_arrow_back"
             app:navigationIconTint="?attr/colorOnSurface"
             app:title="File Name"
-            app:menu="@menu/view_doc_menu"
             app:titleTextColor="?attr/colorOnSurface"
             app:elevation="0dp"
             android:elevation="0dp"
