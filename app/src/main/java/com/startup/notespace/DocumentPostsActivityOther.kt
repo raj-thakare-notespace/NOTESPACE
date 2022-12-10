@@ -67,8 +67,9 @@ class DocumentPostsActivityOther : AppCompatActivity() {
                             for(item in snapshot.children){
                                 val model = item.getValue(DocPostModel::class.java)
                                 arrayList.add(model!!)
-                                adapter.notifyDataSetChanged()
                             }
+                            arrayList.reverse()
+                            adapter.notifyDataSetChanged()
                         }
                     }
 

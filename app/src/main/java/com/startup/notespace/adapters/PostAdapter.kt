@@ -360,12 +360,12 @@ class PostAdapter(var context: Context, private val arrayList: ArrayList<Post>) 
                     .child(model.postedBy!!).addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             if(snapshot.exists()){
-                                val user = snapshot.getValue(User::class.java)
+                                val user = snapshot.getValue(User::class.java)!!
                                 Glide.with(context)
-                                    .load(user?.profilePicture)
+                                    .load(user.profilePicture)
                                     .placeholder(R.drawable.profile_placeholder)
                                     .into(holder.profileImage)
-                                holder.username.text = user?.username
+                                holder.username.text = user.username
                             }
                         }
 

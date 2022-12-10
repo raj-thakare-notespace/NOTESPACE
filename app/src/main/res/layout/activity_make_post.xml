@@ -61,11 +61,12 @@
             <ImageView
                 android:id="@+id/imageMakePost"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="360dp"
+                android:scaleType="fitCenter"
                 android:layout_below="@id/postInputCaption"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/background"
-                android:maxHeight="400dp" />
+                android:visibility="gone"
+                android:background="@android:color/transparent" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/pdfCardView"

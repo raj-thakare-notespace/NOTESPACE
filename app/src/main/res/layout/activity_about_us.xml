@@ -39,10 +39,9 @@
         android:id="@+id/notepsaceLogo"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/ic_note_space_logo"
-        android:layout_below="@id/aboutUsAppBarLayout"/>
+        android:layout_below="@id/aboutUsAppBarLayout"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_note_space_logo" />
 
 
     <TextView
@@ -92,15 +91,26 @@
         android:id="@+id/privacyPolicyTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@id/howToUseTV"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="8dp"
         android:fontFamily="@font/kurale"
         android:text="View Privacy Policy"
         android:textColor="@color/blue"
         android:textSize="18sp" />
 
-
+    <TextView
+        android:id="@+id/howToUseTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="24dp"
+        android:fontFamily="@font/kurale"
+        android:text="How to use Youtube Video."
+        android:textColor="@color/orange"
+        android:textSize="18sp" />
 
 </RelativeLayout>

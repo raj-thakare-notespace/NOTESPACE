@@ -1349,9 +1349,10 @@ class OtherUsersProfileActivity : AppCompatActivity() {
                             for (item in snapshot.children) {
                                 val post = item.getValue(Post::class.java)!!
                                 postArrayList.add(post.postImage)
-                                postAdapter.notifyDataSetChanged()
 
                             }
+                            postArrayList.reverse()
+                            postAdapter.notifyDataSetChanged()
 
                         }
 

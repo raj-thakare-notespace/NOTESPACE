@@ -248,7 +248,7 @@ class ChatActivity : AppCompatActivity() {
 
         sendButton.setOnClickListener {
 
-            var titleNotification = "New message from '${name}'"
+            var titleNotification = "New message from '${currentUserModel.username}'"
             var messageNotification = "${messageBox.text.toString()}"
 
             // Code to add newly chatted user to all chats activity

@@ -149,26 +149,33 @@ class MakePostActivity : AppCompatActivity() {
                                             .push()
                                             .setValue(post).addOnCompleteListener {
                                                 if (it.isSuccessful) {
-    //                                                linearProgressIndicator.visibility = View.GONE
-                                                    progressDialog.dismiss()
-                                                    Toast.makeText(
-                                                        this,
-                                                        "Posted Successfully",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                    startActivity(Intent(this,MainActivity::class.java))
+                                                    Firebase.database.reference.child("users")
+                                                        .child(Firebase.auth.currentUser!!.uid)
+                                                        .child("my_posts")
+                                                        .push()
+                                                        .setValue(post).addOnSuccessListener {
+                                                            progressDialog.dismiss()
+                                                            Toast.makeText(
+                                                                this,
+                                                                "Posted Successfully",
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+                                                            finish()
+                                                        }
+
                                                 }
                                                 else{
                                                     progressDialog.dismiss()
+                                                    finish()
                                                 }
                                             }
 
-                                        Firebase.database.reference.child("users")
-                                            .child(Firebase.auth.currentUser!!.uid)
-                                            .child("my_posts")
-                                            .push()
-                                            .setValue(post)
+
                                     }
+                                }
+                                else{
+                                    Toast.makeText(this,"Something went wrong.",Toast.LENGTH_SHORT).show()
+                                    finish()
                                 }
                             }
                         } catch (e: Exception) {
@@ -198,13 +205,19 @@ class MakePostActivity : AppCompatActivity() {
                             var thumbnailUrl = ""
 
                             thumbnailReference.putBytes(data).addOnSuccessListener {
-                                thumbnailReference.downloadUrl.addOnSuccessListener {
-                                    thumbnailUrl = it.toString()
+                                if(it.task.isSuccessful){
+                                    thumbnailReference.downloadUrl.addOnSuccessListener {
+                                        thumbnailUrl = it.toString()
+                                    }
+                                }
+                                else{
+                                    thumbnailUrl = "https://firebasestorage.googleapis.com/v0/b/notespace-5ca23.appspot.com/o/usefulResources%2Fpdf%20thumbnail%20image.jpg?alt=media&token=0a9b3cae-7887-4a13-9001-dfa2104fedeb"
                                 }
                             }
 
-
-
+                            if(thumbnailUrl.isNullOrEmpty()){
+                                thumbnailUrl = "https://firebasestorage.googleapis.com/v0/b/notespace-5ca23.appspot.com/o/usefulResources%2Fpdf%20thumbnail%20image.jpg?alt=media&token=0a9b3cae-7887-4a13-9001-dfa2104fedeb"
+                            }
 
                             reference.putFile(uri).addOnSuccessListener {
                                 if (it.task.isSuccessful) {
@@ -225,26 +238,34 @@ class MakePostActivity : AppCompatActivity() {
                                             .push()
                                             .setValue(post).addOnCompleteListener {
                                                 if (it.isSuccessful) {
-    //                                                linearProgressIndicator.visibility = View.GONE
-                                                    progressDialog.dismiss()
-                                                    Toast.makeText(
-                                                        this,
-                                                        "Posted Successfully",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                    startActivity(Intent(this,MainActivity::class.java))
+
+                                                    Firebase.database.reference.child("users")
+                                                        .child(Firebase.auth.currentUser!!.uid)
+                                                        .child("my_document_posts")
+                                                        .push()
+                                                        .setValue(post).addOnSuccessListener {
+                                                            progressDialog.dismiss()
+                                                            Toast.makeText(
+                                                                this,
+                                                                "Posted Successfully",
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+                                                            finish()
+                                                        }
+
                                                 }
                                                 else{
                                                     progressDialog.dismiss()
+                                                    finish()
                                                 }
                                             }
 
-                                        Firebase.database.reference.child("users")
-                                            .child(Firebase.auth.currentUser!!.uid)
-                                            .child("my_document_posts")
-                                            .push()
-                                            .setValue(post)
+
                                     }
+                                }
+                                else{
+                                    Toast.makeText(this,"Something went wrong.",Toast.LENGTH_SHORT).show()
+                                    finish()
                                 }
 
 

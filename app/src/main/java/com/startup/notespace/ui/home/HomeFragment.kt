@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide
 import com.startup.notespace.*
 import com.startup.notespace.adapters.PostAdapter
 import com.startup.notespace.models.Post
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -42,10 +42,6 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
 
     lateinit var fab: FloatingActionButton
-
-    lateinit var createNoteButton: LinearLayout
-    lateinit var uploadDocumentButton: LinearLayout
-    lateinit var postButton: LinearLayout
 
     lateinit var recyclerView: RecyclerView
 
@@ -150,6 +146,46 @@ class HomeFragment : Fragment() {
         adapter.notifyDataSetChanged()
     }
 
+    class ModalBottomSheet : BottomSheetDialogFragment() {
+
+        override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View? = inflater.inflate(R.layout.bottom_sheet_dialog, container, false)
+
+        companion object {
+            const val TAG = "ModalBottomSheet"
+        }
+
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+
+            val createNoteBtn : LinearLayout = view.findViewById(R.id.createNoteLL)
+            val postBtn : LinearLayout = view.findViewById(R.id.uploadPostLL)
+            val uploadDocumentBtn : LinearLayout = view.findViewById(R.id.uploadDocLL)
+
+            postBtn.setOnClickListener {
+                startActivity(Intent(view.context, MakePostActivity::class.java))
+                dismiss()
+            }
+
+            createNoteBtn.setOnClickListener {
+                val intent = Intent(view.context,CreateOnlineNoteActivity::class.java)
+                intent.putExtra("place","home")
+                startActivity(intent)
+                dismiss()
+            }
+
+            uploadDocumentBtn.setOnClickListener {
+                val intent = Intent(view.context, MyLibraryActivity::class.java)
+                startActivity(intent)
+                dismiss()
+            }
+        }
+    }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -222,35 +258,8 @@ class HomeFragment : Fragment() {
 
         fab.setOnClickListener {
 
-            val dialog = BottomSheetDialog(view.context)
-            val view = layoutInflater.inflate(R.layout.bottom_sheet_dialog, null)
-
-            createNoteButton = view.findViewById(R.id.createNoteLL)
-            postButton = view.findViewById(R.id.uploadPostLL)
-            uploadDocumentButton = view.findViewById(R.id.uploadDocLL)
-
-            postButton.setOnClickListener {
-                startActivity(Intent(view.context, MakePostActivity::class.java))
-                dialog.dismiss()
-            }
-
-            createNoteButton.setOnClickListener {
-                val intent = Intent(view.context,CreateOnlineNoteActivity::class.java)
-                intent.putExtra("place","home")
-                startActivity(intent)
-                dialog.dismiss()
-            }
-
-            uploadDocumentButton.setOnClickListener {
-                val intent = Intent(view.context, MyLibraryActivity::class.java)
-                startActivity(intent)
-                dialog.dismiss()
-            }
-
-            dialog?.setCancelable(true)
-            dialog?.setContentView(view)
-            dialog?.show()
-
+            val modalBottomSheet = ModalBottomSheet()
+            modalBottomSheet.show(parentFragmentManager, ModalBottomSheet.TAG)
 
         }
 

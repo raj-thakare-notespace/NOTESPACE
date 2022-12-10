@@ -16,8 +16,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
-import com.downloader.OnDownloadListener
-import com.downloader.PRDownloader
+
 import com.google.android.material.appbar.MaterialToolbar
 import java.util.*
 

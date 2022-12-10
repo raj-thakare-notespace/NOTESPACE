@@ -86,25 +86,6 @@ class ProfileActivity : AppCompatActivity() {
 
         rankImageView = findViewById(R.id.rankImageViewMyProfile)
 
-        var youTubeVideoLink : String = ""
-
-        try {
-            FirebaseDatabase.getInstance().reference.child("videos").child("youtube").child("howToUse")
-                .addListenerForSingleValueEvent(object : ValueEventListener{
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if(snapshot.exists()){
-                            youTubeVideoLink = snapshot.value.toString()
-                        }
-
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
-                    }
-
-                })
-        } catch (e: Exception) {
-        }
 
 
         followersLL = findViewById(R.id.followersLL)
@@ -154,16 +135,11 @@ class ProfileActivity : AppCompatActivity() {
             view.findViewById<MaterialButton>(R.id.accountPrivateAlertDialog)
         val signOutBtnAlertDialogBtn = view.findViewById<MaterialButton>(R.id.signOutBtnAlertDialog)
         val aboutUsButton = view.findViewById<MaterialButton>(R.id.aboutUsAlertDialog)
-        val howToUseAlertDialog = view.findViewById<MaterialButton>(R.id.howToUseAlertDialog)
 
-        howToUseAlertDialog.setOnClickListener {
-            Log.i("link",youTubeVideoLink)
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(youTubeVideoLink)))
-            dialog.dismiss()
-        }
 
         aboutUsButton.setOnClickListener {
-            startActivity(Intent(this,AboutUsActivity::class.java))
+            val intent = Intent(this,AboutUsActivity::class.java)
+            startActivity(intent)
             dialog.dismiss()
         }
 
@@ -460,6 +436,7 @@ class ProfileActivity : AppCompatActivity() {
 
                                 }
                             }
+                            postArrayList.reverse()
                             postAdapter.notifyDataSetChanged()
                         }
 
